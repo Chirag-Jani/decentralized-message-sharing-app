@@ -12,7 +12,7 @@ import Member from "./Components/Member";
 function App() {
   return (
     <div>
-      <Router>
+      {/* <Router>
         <Navbar />
         <Routes>
           <Route path="/" element={<ContractInfo />}></Route>
@@ -21,7 +21,8 @@ function App() {
           <Route path="/news" element={<News />}></Route>
           <Route path="/member" element={<Member />}></Route>
         </Routes>
-      </Router>
+      </Router> */}
+      <Member />
     </div>
   );
 }

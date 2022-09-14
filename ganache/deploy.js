@@ -18,9 +18,9 @@ const deploy = async () => {
     const TestContract = await new web3.eth.Contract(compiledTestContract.abi)
       .deploy({ data: compiledTestContract.evm.bytecode.object })
       .send({ from: accounts[0], gas: "4000000" });
-    console.log(TestContract);
+    // console.log(TestContract);
 
-    console.log("TestContract deployed at " + TestContract.options.address); // 0x4b9c336cC6f264a48b4FBe057EDAcC15Cc758935
+    console.log("TestContract deployed at " + TestContract.options.address); // 0xbc652C46867a58dc8453fD3c0de9929cdC716bE6
     process.exit(0);
   } catch (err) {
     console.log(err.message);
