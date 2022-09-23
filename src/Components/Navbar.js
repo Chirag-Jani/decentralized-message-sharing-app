@@ -6,9 +6,9 @@ function Navbar() {
     <div className="container-fluid mb-5 p-0">
       <div className="d-flex justify-content-evenly bg-dark text-white w-100 p-3">
         <h3>
-          <Link className="text-white" to="/">
+          <Link className="text-white" to="/login">
             {" "}
-            ContractInfo
+            Login / Register
           </Link>
         </h3>
         <h3>
@@ -18,15 +18,9 @@ function Navbar() {
           </Link>
         </h3>
         <h3>
-          <Link className="text-white" to="/member">
+          <Link className="text-white" to="/profile">
             {" "}
-            Members
-          </Link>
-        </h3>
-        <h3>
-          <Link className="text-white" to="/login">
-            {" "}
-            Login
+            Profile
           </Link>
         </h3>
       </div>
