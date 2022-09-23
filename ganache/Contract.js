@@ -2,7 +2,7 @@ import web3 from "./Web3";
 
 const Contract = require("./build/Contract.json");
 
-const DeployedContract = "0xa2d764CDFD1A7a3430fD8eeC22B89e8997517dAa";
+const DeployedContract = "0x46abB328c9ddaf1AE28e61c6539cE0FedFFF6f50";
 
 const web3Contract = new web3.eth.Contract(Contract.abi, DeployedContract);
 

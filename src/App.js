@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // importing components
@@ -50,7 +50,12 @@ function App() {
     console.log("Account Connected: " + ethereum.isConnected());
     const availableMethods = await Contract.methods;
     console.log(availableMethods);
+
+    /////////////////////////////////////
   };
+
+  // ///////////////////////////////////////////////////////////////////////////////////////////////////
+  const [showApproovedMemberInfo, setShowApproovedMemberInfo] = useState(false);
 
   // getting requested Members
   const [requestedMembersArray, setRequestedMembersArray] = useState([]);
@@ -64,6 +69,7 @@ function App() {
         .getApprovedOrRequestedMember(true)
         .call({ from: accounts[0], gas: 2000000 });
       setRequestedMembersArray(requestedMembers);
+      setShowApproovedMemberInfo(false);
     } catch (error) {
       console.log(error);
     }
@@ -80,6 +86,7 @@ function App() {
         .call({ from: accounts[0], gas: 2000000 });
 
       setApproovedMembersArray(approvedMembers);
+      setShowApproovedMemberInfo(true);
     } catch (error) {
       console.log(error);
     }
@@ -107,6 +114,19 @@ function App() {
   };
 
   // approove member
+  const approoveMember = async (userAddress) => {
+    const accounts = await ethereum.request({ method: "eth_accounts" });
+    try {
+      const approove = await Contract.methods
+        .approoveRequest(userAddress, loggedInUserInfo.userAddress)
+        .send({ from: accounts[0], gas: 2000000 });
+      console.log("Member Appooved");
+    } catch (err) {
+      console.log(
+        "Transaction Reverted due to Require Statement or Out Of Gas." + err
+      );
+    }
+  };
 
   // Login Function
   const [loginUserAddress, setLoginUserAddress] = useState("");
@@ -116,18 +136,18 @@ function App() {
   };
 
   const login = async () => {
-    setUserLoggedIn(true);
-
     const accounts = await ethereum.request({ method: "eth_accounts" });
     try {
       const findMember = await Contract.methods
         .findMember(loginUserAddress, false)
         .call({ from: accounts[0], gas: 2000000 });
 
+      setUserLoggedIn(true);
       setLoggedInUserInfo(findMember);
+      // setLoginUserAddress("");
     } catch (err) {
       console.log(
-        "Transaction Reverted due to Require Statement or Out Of Gas."
+        "Transaction Reverted due to Require Statement or Out Of Gas." + err
       );
     }
   };
@@ -151,14 +171,14 @@ function App() {
   return (
     <div>
       <Router>
-        <Navbar />
+        <Navbar logout={logout} userLoggedIn={userLoggedIn} />
         <Routes>
           <Route
-            path="/login"
+            path="/"
             element={<Login login={login} loginInput={loginInput} />}
           ></Route>
           <Route
-            path="/"
+            path="/signup"
             element={
               <Signup
                 handleChange={handleChange}
@@ -181,12 +201,13 @@ function App() {
                 approovedMembersArray={approovedMembersArray}
                 logout={logout}
                 loggedInUserInfo={loggedInUserInfo}
+                approoveMember={approoveMember}
+                showApproovedMemberInfo={showApproovedMemberInfo}
               />
             }
           ></Route>
         </Routes>
       </Router>
-      {/* <Member /> */}
     </div>
   );
 }

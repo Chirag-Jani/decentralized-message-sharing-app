@@ -29,7 +29,7 @@ function Login(props) {
         </button>
         <p className="mt-2">
           Don't have an account?
-          <Link to="/">Signup</Link>
+          <Link to="/signup">Signup</Link>
         </p>
       </div>
     </>

@@ -13,6 +13,14 @@ contract Contract {
         string[] postedNews;
     }
 
+    // indexes to remove
+
+    uint256 requestIndex = 0;
+    uint256 memberIndex = 0;
+
+    mapping(address => uint256) indexFromRequest;
+    mapping(address => uint256) indexFromApproove;
+
     // for approved members
     mapping(address => MemberStruct) getMemberWithAddress;
     MemberStruct[] arrayOfMembers;
@@ -138,6 +146,7 @@ contract Contract {
         addOrRequestMember(post, dept, name, userAddress, false);
 
         // need to remove entry from request array
+        removeRequest(_userAddress);
     }
 
     function login(address userAddress) public view returns (bool) {
@@ -146,5 +155,13 @@ contract Contract {
         } else {
             return false;
         }
+    }
+
+    function removeRequest(address _userAddress) internal {
+        uint256 index = indexFromRequest[_userAddress];
+        arrayOfRequestedMembers[index] = arrayOfRequestedMembers[
+            arrayOfRequestedMembers.length - 1
+        ];
+        arrayOfRequestedMembers.pop();
     }
 }

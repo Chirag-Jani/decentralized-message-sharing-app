@@ -73,7 +73,7 @@ function Signup(props) {
               </button>
             </div>
             <p className="mt-2">
-              Already have an account? <Link to="/login">Login</Link>
+              Already have an account? <Link to="/">Login</Link>
             </p>
           </div>
         </div>
