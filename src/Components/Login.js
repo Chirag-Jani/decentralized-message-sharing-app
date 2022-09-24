@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 function Login(props) {
-  const { login, loginInput } = props;
+  const { login, loginInput, loginUserAddress } = props;
 
   // function call on login button click
 
@@ -16,6 +16,7 @@ function Login(props) {
             type="text"
             className="form-control"
             placeholder="0x...000"
+            value={loginUserAddress}
             onChange={loginInput}
           />
         </div>

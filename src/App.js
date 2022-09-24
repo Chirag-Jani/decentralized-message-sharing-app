@@ -12,6 +12,8 @@ import Profile from "./Components/Profile";
 import Contract from "./contractInfo/Contract";
 
 function App() {
+  // to navigate to another page on login, logout, and signup
+
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [loggedInUserInfo, setLoggedInUserInfo] = useState({
     post: "",
@@ -106,6 +108,8 @@ function App() {
           true
         )
         .send({ from: accounts[0], gas: 2000000 });
+
+      setMemberInfo({ post: "", dept: "", name: "", userAddress: "" });
     } catch (err) {
       console.log(
         "Transaction Reverted due to Require Statement or Out Of Gas."
@@ -138,13 +142,22 @@ function App() {
   const login = async () => {
     const accounts = await ethereum.request({ method: "eth_accounts" });
     try {
-      const findMember = await Contract.methods
-        .findMember(loginUserAddress, false)
-        .call({ from: accounts[0], gas: 2000000 });
+      const userExist = await Contract.methods
+        .login(loginUserAddress)
+        .call({ from: accounts[0], gas: 200000 });
 
-      setUserLoggedIn(true);
-      setLoggedInUserInfo(findMember);
-      // setLoginUserAddress("");
+      if (userExist) {
+        const findMember = await Contract.methods
+          .findMember(loginUserAddress, false)
+          .call({ from: accounts[0], gas: 2000000 });
+
+        setUserLoggedIn(true);
+        setLoggedInUserInfo(findMember);
+        setLoginUserAddress("");
+      } else {
+        alert("User does not exist. Request Approval First!");
+        setLoginUserAddress("");
+      }
     } catch (err) {
       console.log(
         "Transaction Reverted due to Require Statement or Out Of Gas." + err
@@ -175,7 +188,13 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={<Login login={login} loginInput={loginInput} />}
+            element={
+              <Login
+                login={login}
+                loginInput={loginInput}
+                loginUserAddress={loginUserAddress}
+              />
+            }
           ></Route>
           <Route
             path="/signup"
@@ -183,6 +202,7 @@ function App() {
               <Signup
                 handleChange={handleChange}
                 requestMember={requestMember}
+                memberInfo={memberInfo}
               />
             }
           ></Route>

@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 function Signup(props) {
-  const { handleChange, requestMember } = props;
+  const { handleChange, requestMember, memberInfo } = props;
 
   return (
     <>
@@ -29,6 +29,7 @@ function Signup(props) {
                 id="fruits"
                 onChange={(e) => handleChange(e)}
                 name="post"
+                value={memberInfo.post}
               >
                 <option defaultValue={true}>Select Role</option>
                 <option value="DEAN">DEAN</option>
@@ -42,6 +43,7 @@ function Signup(props) {
                 className="text-center p-1"
                 onChange={(e) => handleChange(e)}
                 name="dept"
+                value={memberInfo.dept}
               >
                 <option defaultValue={true}>Select Role</option>
                 <option value="CGPIT">CGPIT</option>
@@ -56,6 +58,7 @@ function Signup(props) {
                 placeholder="Enter Your Name"
                 onChange={(e) => handleChange(e)}
                 name="name"
+                value={memberInfo.name}
               />
             </div>
             <div className="mb-3">
@@ -65,6 +68,7 @@ function Signup(props) {
                 placeholder="0x...000"
                 onChange={(e) => handleChange(e)}
                 name="userAddress"
+                value={memberInfo.userAddress}
               />
             </div>
             <div>
