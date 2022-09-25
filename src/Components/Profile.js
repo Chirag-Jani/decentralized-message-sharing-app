@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 function Profile(props) {
+  // useEffect(() => {
+  //   // have to update stuff
+  // }, [loggedInUserInfo]);
+
   const {
     userLoggedIn,
     getMethods,
@@ -34,14 +38,13 @@ function Profile(props) {
                 <strong>{loggedInUserInfo.dept}</strong>
                 <strong>{loggedInUserInfo.userAddress}</strong>
                 <strong>
-                  {/* {loggedInUserInfo.postedNews.map((post) => {
+                  {loggedInUserInfo.allPostsByUser.map((post) => {
                     return (
-                      <>
-                        <strong>{post}</strong>
-                      </>
+                      <div>
+                        <p>{post.postData}</p>
+                      </div>
                     );
-                  })} */}
-                  No Posts Yet
+                  })}
                 </strong>
               </div>
             </div>
@@ -135,14 +138,13 @@ function Profile(props) {
                 <strong>{loggedInUserInfo.dept}</strong>
                 <strong>{loggedInUserInfo.userAddress}</strong>
                 <strong>
-                  {/* {loggedInUserInfo.postedNews.map((post) => {
+                  {loggedInUserInfo.allPostsByUser.map((post) => {
                     return (
-                      <>
-                        <strong>{post}</strong>
-                      </>
+                      <div>
+                        <p>{post.postData}</p>
+                      </div>
                     );
-                  })} */}
-                  No Posts Yet
+                  })}
                 </strong>
               </div>
             </div>
@@ -237,7 +239,7 @@ function Profile(props) {
     return (
       <div className="container">
         <h3>
-          <Link to="/">Log in</Link> to access this feature.
+          <Link to="/login">Log in</Link> to access this feature.
         </h3>
       </div>
     );
