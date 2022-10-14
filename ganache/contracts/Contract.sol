@@ -1,3 +1,10 @@
+// get msg.sender while posting
+// take msg.sender as an argument in all the functions that require input
+// connect to metamask while logging in - instead of taking address input manually
+// need infura alternative for API and entry point | run locally if not available
+// window.eth
+// alternative to create webpack 4 - read blogs
+
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.7;
 
