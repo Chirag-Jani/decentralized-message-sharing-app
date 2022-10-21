@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 function Login(props) {
-  const { login, loginInput, loginUserAddress } = props;
+  const { login } = props;
 
   // function call on login button click
 
@@ -10,16 +10,7 @@ function Login(props) {
     <>
       <div className="container w-25 mb-5">
         <h2 className="mt-0 mb-3">Login Your Account</h2>
-        <div className="mb-3">
-          <label className="form-label">Wallet Address:</label>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="0x...000"
-            value={loginUserAddress}
-            onChange={loginInput}
-          />
-        </div>
+        <div className="mb-3"></div>
         <button
           type="submit"
           className="btn btn-primary"

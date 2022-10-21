@@ -5,17 +5,108 @@
 // window.eth
 // alternative to create webpack 4 - read blogs
 
+// 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2
+// 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db
+// 0x78731D3Ca6b7E34aC0F824c42a7cC18A495cabaB
+// 0x617F2E2fD72FD9D5503197092aC168c91465E7f2
+// 0x17F6AD8Ef982297579C203069C1DbfFE4348c372
+
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.7;
 
 contract Contract {
     function recieve() external payable {}
 
-    // post structure
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // handling news posting here
+
     struct PostStructure {
+        string postHash;
         address postCreator;
-        string postData;
+        // string[] postViewer;
+        bool isRequest;
     }
+
+    PostStructure instanceOfPost;
+
+    PostStructure[] allThePosts;
+    mapping(address => PostStructure) postOfUser;
+
+    PostStructure[] allTheRequestedPosts;
+    mapping(address => PostStructure) postOfRequestingUser;
+
+    function postNews(
+        string memory _postHash,
+        address _postCreator,
+        bool _isRequest
+    ) public {
+        // few required require statements
+        // user needs to be logged in
+
+        // post viewer needs to be check
+        // while mapping through all the posts, check if user exist in the postViewer array or not,
+        // for each post, and if it does, render the post else continue
+
+        instanceOfPost.postHash = _postHash;
+        instanceOfPost.postCreator = _postCreator;
+        // instanceOfPost.postViewer = _postViewer;
+        instanceOfPost.isRequest = _isRequest;
+
+        if (_isRequest != true) {
+            allThePosts.push(instanceOfPost);
+            postOfUser[_postCreator] = instanceOfPost;
+        } else {
+            allTheRequestedPosts.push(instanceOfPost);
+            postOfRequestingUser[_postCreator] = instanceOfPost;
+        }
+    }
+
+    function getAllPosts(bool requestedPosts)
+        public
+        view
+        returns (PostStructure[] memory)
+    {
+        if (requestedPosts) {
+            return allTheRequestedPosts;
+        } else {
+            return allThePosts;
+        }
+    }
+
+    function approvePost(address _requestedBy, address _approvedBy) public {
+        // find the post
+        PostStructure memory post = postOfRequestingUser[_requestedBy];
+
+        // compare power between requester and approver
+        uint256 requestingUserPower = getRequestedMemberWithAddress[
+            _requestedBy
+        ].power;
+        uint256 approvongUserPower = getMemberWithAddress[_approvedBy].power;
+
+        require(
+            approvongUserPower < requestingUserPower,
+            "You can't approove post of someone above than you."
+        );
+
+        // add to the approved list
+        allThePosts.push(post);
+
+        // adding to individual user's array
+        postOfUser[_requestedBy] = post;
+
+        // remove from the requested list
+    }
+
+    function getPostsByUser(address _userAddress)
+        public
+        view
+        returns (PostStructure[] memory)
+    {
+        return getMemberWithAddress[_userAddress].allPostsByUser;
+    }
+
+    // ////////////////////////////////////////////////////////
 
     // member structure
     struct MemberStruct {
@@ -25,34 +116,6 @@ contract Contract {
         address userAddress;
         uint256 power;
         PostStructure[] allPostsByUser;
-    }
-
-    // instance of post structure, to modify and add new posts
-    PostStructure instanceOfPost;
-
-    // to get all the post hashes without having to iterate each member
-    PostStructure[] postedByAnyone;
-
-    // function to add post
-    function addPost(address _postCreator, string memory _postData) public {
-        instanceOfPost.postCreator = _postCreator;
-        instanceOfPost.postData = _postData;
-        getMemberWithAddress[_postCreator].allPostsByUser.push(instanceOfPost);
-        postedByAnyone.push(instanceOfPost);
-    }
-
-    // function to get post of an individual member
-    function getPostsByUser(address _userAddress)
-        public
-        view
-        returns (PostStructure[] memory)
-    {
-        return getMemberWithAddress[_userAddress].allPostsByUser;
-    }
-
-    // function to get posts by anyone
-    function getAllPosts() public view returns (PostStructure[] memory) {
-        return postedByAnyone;
     }
 
     // indexes to remove user from request array once approoved
@@ -114,9 +177,21 @@ contract Contract {
             keccak256(abi.encodePacked("HOD"))
         ) {
             instanceOfMemberStruct.power = 2;
-        } else {
+        } else if (
+            keccak256(abi.encodePacked(_post)) ==
+            keccak256(abi.encodePacked("STAFF"))
+        ) {
             instanceOfMemberStruct.power = 3;
+        } else if (
+            keccak256(abi.encodePacked(_post)) ==
+            keccak256(abi.encodePacked("STUDENT"))
+        ) {
+            instanceOfMemberStruct.power = 4;
+        } else {
+            instanceOfMemberStruct.power = 5;
         }
+
+        // if not dean
 
         if (
             request == true &&
@@ -133,7 +208,9 @@ contract Contract {
                 _userAddress
             ] = instanceOfMemberStruct;
             memberRequested[_userAddress] = true;
-        } else {
+        }
+        // if dean
+        else {
             if (
                 keccak256(abi.encodePacked(_post)) !=
                 keccak256(abi.encodePacked("DEAN"))
@@ -174,7 +251,7 @@ contract Contract {
         MemberStruct memory memberTobeApproved = getRequestedMemberWithAddress[
             _userAddress
         ];
-        MemberStruct memory apprivingMember = getMemberWithAddress[
+        MemberStruct memory apprivongMember = getMemberWithAddress[
             approvingUserAddress
         ];
         string memory post = memberTobeApproved.post;
@@ -182,10 +259,10 @@ contract Contract {
         string memory name = memberTobeApproved.name;
         address userAddress = memberTobeApproved.userAddress;
         uint256 requestingUserPower = memberTobeApproved.power;
-        uint256 approvingUserPower = apprivingMember.power;
+        uint256 approvongUserPower = apprivongMember.power;
 
         require(
-            approvingUserPower <= requestingUserPower,
+            approvongUserPower <= requestingUserPower,
             "You can't approove someone above than you."
         );
 
@@ -213,63 +290,4 @@ contract Contract {
         ];
         arrayOfRequestedMembers.pop();
     }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // handling news posting here
-
-    // struct PostStructure{
-    //     string postHash;
-    //     address postCreator;
-    //     // string[] postViewer;
-    //     bool isRequest;
-    // }
-
-    // PostStructure instanceOfPost;
-
-    // PostStructure[] allThePosts;
-    // mapping(address => string) postOfUser;
-
-    // PostStructure[] allTheRequestedPosts;
-    // mapping(address => string) postOfRequestingUser;
-
-    // function postNews(string memory _postHash, address _postCreator,  bool _isRequest) public{
-
-    //     // few required require statements
-    //     // user needs to be logged in
-    //     // user needs to have right to post
-    //     // same post should not exist
-
-    //     // while approoving
-    //     // check power
-    //     // remove from request array
-
-    //     // post viewer needs to be check
-    //     // while mapping through all the posts, check if user exist in the postViewer array or not,
-    //     // for each post, and if it does, render the post else continue
-
-    //     instanceOfPost.postHash = _postHash;
-    //     instanceOfPost.postCreator = _postCreator;
-    //     // instanceOfPost.postViewer = _postViewer;
-    //     instanceOfPost.isRequest = _isRequest;
-
-    //     if(_isRequest != true){
-    //         allThePosts.push(instanceOfPost);
-    //         postOfUser[_postCreator] = _postHash;
-    //     }
-    //     else{
-    //         allTheRequestedPosts.push(instanceOfPost);
-    //         postOfRequestingUser[_postCreator] = _postHash;
-    //     }
-    // }
-
-    // function getAllPosts(bool requestedPosts) public view returns(PostStructure[] memory){
-
-    //     if(requestedPosts){
-    //         return allTheRequestedPosts;
-    //     }
-    //     else{
-    //         return allThePosts;
-    //     }
-    // }
 }

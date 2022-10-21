@@ -4,6 +4,19 @@
 // 0x617F2E2fD72FD9D5503197092aC168c91465E7f2
 // 0x17F6AD8Ef982297579C203069C1DbfFE4348c372
 
+///////////////////////////////////////
+
+// currnet issues:
+// login karti vakhte setState na lidhe error aave che (setLoginUserAddress ma time lage che etle 2 var click karvu pade che)
+// post remove karvani one approved
+// 2 vaar click kariye to 2 vaar add kari dey che array ma (remove karsu etle aa issue nai avve)
+// refresh kariye etle logout thai jaay che
+// gotta divide contracts into multiple
+// webpack 4 issues remains
+// i thik i can use metamask directly for deployment maybe and we don't need ganache anymore
+
+///////////////////////////////////////
+
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -36,7 +49,7 @@ function App() {
     post: "",
     dept: "",
     name: "",
-    userAddress: "",
+    // userAddress: "",
   });
 
   // onChange function to handle member info while registration
@@ -69,6 +82,7 @@ function App() {
 
   // ///////////////////////////////////////////////////////////////////////////////////////////////////
   const [showApproovedMemberInfo, setShowApproovedMemberInfo] = useState(false);
+  const [showRequestedMemberInfo, setShowRequestedMemberInfo] = useState(false);
 
   // getting requested Members
   const [requestedMembersArray, setRequestedMembersArray] = useState([]);
@@ -83,6 +97,7 @@ function App() {
         .call({ from: accounts[0], gas: 2000000 });
       setRequestedMembersArray(requestedMembers);
       setShowApproovedMemberInfo(false);
+      setShowRequestedMemberInfo(true);
     } catch (error) {
       console.log(error);
     }
@@ -100,6 +115,7 @@ function App() {
 
       setApproovedMembersArray(approvedMembers);
       setShowApproovedMemberInfo(true);
+      setShowRequestedMemberInfo(false);
     } catch (error) {
       console.log(error);
     }
@@ -115,7 +131,7 @@ function App() {
           memberInfo.post,
           memberInfo.dept,
           memberInfo.name,
-          memberInfo.userAddress,
+          accounts[0],
           true
         )
         .send({ from: accounts[0], gas: 2000000 });
@@ -136,6 +152,11 @@ function App() {
         .approoveRequest(userAddress, loggedInUserInfo.userAddress)
         .send({ from: accounts[0], gas: 2000000 });
       console.log("Member Appooved");
+
+      // if user is now allowed to approve user (because they are at higher position), then alert the user when the require statement is reverting the contract
+      // if (!approove) {
+      //   alert("na bhai");
+      // }
     } catch (err) {
       console.log(
         "Transaction Reverted due to Require Statement or Out Of Gas." + err
@@ -147,20 +168,21 @@ function App() {
   const [loginUserAddress, setLoginUserAddress] = useState("");
 
   // onChange function to handle user's input while trying to login
-  const loginInput = (e) => {
-    setLoginUserAddress(e.target.value);
-  };
+  // const loginInput = (e) => {
+  //   setLoginUserAddress(e.target.value);
+  // };
 
   // login function
   const login = async () => {
     // getting available accounts
     const accounts = await ethereum.request({ method: "eth_accounts" });
+    setLoginUserAddress(accounts[0]);
 
     // calling smart contract's function
     try {
       // checks if user exist or not
       const userExist = await Contract.methods
-        .login(loginUserAddress)
+        .login(accounts[0])
         .call({ from: accounts[0], gas: 200000 });
 
       // if user exist then - fetching user's data to show in our app
@@ -171,9 +193,9 @@ function App() {
 
         setUserLoggedIn(true);
         setLoggedInUserInfo(findMember);
-        alert("Login successful!");
+        // alert("Login successful!");
         setLoginUserAddress("");
-        getAllPosts();
+        getPosts();
       }
 
       // if user does not exist
@@ -203,6 +225,9 @@ function App() {
   // state to manage posted news now
   const [oldPosts, setOldPosts] = useState([]);
 
+  // managing requested posts
+  const [requestedPosts, setRequestedPosts] = useState([]);
+
   // state to manage user's text while posting
   const [postInput, setPostInput] = useState("");
 
@@ -223,42 +248,87 @@ function App() {
       const accounts = await ethereum.request({
         method: "eth_accounts",
       });
-      const post = await Contract.methods
-        .addPost(loggedInUserInfo.userAddress, postInput)
-        .send({ from: accounts[0], gas: 2000000 });
-      setOldPosts([...oldPosts, newPost]);
-      setPostInput("");
+
+      // check for user if it is student or not
+      if (loggedInUserInfo.post != "STUDENT") {
+        const post = await Contract.methods
+          .postNews(postInput, loggedInUserInfo.userAddress, false)
+          .send({ from: accounts[0], gas: 2000000 });
+        setOldPosts([...oldPosts, newPost]);
+        setPostInput("");
+      } else {
+        const post = await Contract.methods
+          .postNews(postInput, loggedInUserInfo.userAddress, true)
+          .send({ from: accounts[0], gas: 2000000 });
+        setPostInput("");
+      }
     } catch (error) {
       console.log(error);
     }
+    console.log("posted");
   };
 
   // this will fetch all the posts when the component will be loaded
 
-  const getAllPosts = async () => {
+  const getPosts = async () => {
     try {
       const accounts = await ethereum.request({
         method: "eth_accounts",
       });
       const allPosts = await Contract.methods
-        .getAllPosts()
+        .getAllPosts(false)
         .call({ from: accounts[0], gas: 2000000 });
 
-      // setOldPosts(allPosts);
-      console.log(allPosts);
+      setOldPosts(allPosts);
+      console.log(oldPosts);
     } catch (error) {
       console.log(error);
     }
-    console.log("get all post called");
   };
 
-  useEffect(
-    () => {
-      getAllPosts();
-    },
-    // whenever oldPosts will update, useEffect will be called
-    []
-  );
+  const getRequestedPosts = async () => {
+    try {
+      const accounts = await ethereum.request({
+        method: "eth_accounts",
+      });
+      const allRequestedPosts = await Contract.methods
+        .getAllPosts(true)
+        .call({ from: accounts[0], gas: 2000000 });
+
+      setRequestedPosts(allRequestedPosts);
+      console.log(allRequestedPosts);
+      setShowApproovedMemberInfo(false);
+      setShowRequestedMemberInfo(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const approvePost = async (postCreator) => {
+    console.log("approved" + postCreator);
+
+    try {
+      const accounts = await ethereum.request({
+        method: "eth_accounts",
+      });
+      const approvePost = await Contract.methods
+        .approvePost(postCreator, loggedInUserInfo.userAddress)
+        .send({ from: accounts[0], gas: 2000000 });
+
+      getPosts();
+      getRequestedPosts();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // useEffect(
+  //   () => {
+  //     getAllPosts();
+  //   },
+  //   // whenever oldPosts will update, useEffect will be called
+  //   []
+  // );
 
   return (
     <div>
@@ -270,8 +340,8 @@ function App() {
             element={
               <Login
                 login={login}
-                loginInput={loginInput}
-                loginUserAddress={loginUserAddress}
+                // loginInput={loginInput}
+                // loginUserAddress={loginUserAddress}
               />
             }
           ></Route>
@@ -294,6 +364,8 @@ function App() {
                 handlePostInput={handlePostInput}
                 post={post}
                 oldPosts={oldPosts}
+                getPosts={getPosts}
+                userLoggedIn={userLoggedIn}
               />
             }
           ></Route>
@@ -313,6 +385,10 @@ function App() {
                 loggedInUserInfo={loggedInUserInfo}
                 approoveMember={approoveMember}
                 showApproovedMemberInfo={showApproovedMemberInfo}
+                showRequestedMemberInfo={showRequestedMemberInfo}
+                getRequestedPosts={getRequestedPosts}
+                requestedPosts={requestedPosts}
+                approvePost={approvePost}
               />
             }
           ></Route>

@@ -19,7 +19,7 @@ function Signup(props) {
             <label className="mb-4">Select Role:</label>
             <label className="mb-4">Select Department:</label>
             <label className="mb-4">Name:</label>
-            <label className="mb-4">Address:</label>
+            {/* <label className="mb-4">Address:</label> */}
           </div>
           <div className="col-9 text-start">
             <div className="mb-3">
@@ -35,6 +35,7 @@ function Signup(props) {
                 <option value="DEAN">DEAN</option>
                 <option value="HOD">HOD</option>
                 <option value="STAFF">STAFF</option>
+                <option value="STUDENT">STUDENT</option>
               </select>
             </div>
             <div className="mb-3">
@@ -62,14 +63,15 @@ function Signup(props) {
               />
             </div>
             <div className="mb-3">
-              <input
+              {/* <input
+                disabled={true}
                 className="p-1 text-center"
                 type="text"
-                placeholder="0x...000"
-                onChange={(e) => handleChange(e)}
+                placeholder={member}
+                // onChange={(e) => handleChange(e)}
                 name="userAddress"
                 value={memberInfo.userAddress}
-              />
+              /> */}
             </div>
             <div>
               <button className="btn btn-primary" onClick={requestMember}>
