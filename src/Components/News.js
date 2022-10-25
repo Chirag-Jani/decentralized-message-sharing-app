@@ -17,7 +17,7 @@ function News(props) {
         <h1>News you need to know!</h1>
         <div className="mt-4 mb-4 d-flex w-25 m-auto align-middle justify-content-center">
           {/* here we are taking user's address while posting or requesting */}
-          {/* <input
+          <input
             type="text"
             name="postCreator"
             id=""
@@ -25,7 +25,7 @@ function News(props) {
             className="mx-2 rounded-1 text-center"
             value={loggedInUserInfo.userAddress}
             disabled={true}
-          /> */}
+          />
           <input
             type="text"
             name="postInput"

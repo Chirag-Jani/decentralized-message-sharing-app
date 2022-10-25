@@ -306,28 +306,30 @@ function Profile(props) {
 
           <div className="container">
             {requestedPosts.map((post) => {
-              return (
-                <>
-                  <div className="border border-dark p-3 my-4 text-start">
-                    <p>
-                      <strong> Posted by: </strong> <br />
-                      {post.postCreator}
-                    </p>
-                    <p>
-                      <strong> Post Content: </strong> <br />
-                      {post.postHash}
-                    </p>
-                    <button
-                      className="btn btn-success my-1"
-                      onClick={() => {
-                        approvePost(post.postCreator);
-                      }}
-                    >
-                      Approve
-                    </button>
-                  </div>
-                </>
-              );
+              if (post.isRequest) {
+                return (
+                  <>
+                    <div className="border border-dark p-3 my-4 text-start">
+                      <p>
+                        <strong> Posted by: </strong> <br />
+                        {post.postCreator}
+                      </p>
+                      <p>
+                        <strong> Post Content: </strong> <br />
+                        {post.postHash}
+                      </p>
+                      <button
+                        className="btn btn-success my-1"
+                        onClick={() => {
+                          approvePost(post.postCreator);
+                        }}
+                      >
+                        Approve
+                      </button>
+                    </div>
+                  </>
+                );
+              }
             })}
           </div>
         </div>

@@ -6,14 +6,16 @@
 
 ///////////////////////////////////////
 
-// currnet issues:
-// login karti vakhte setState na lidhe error aave che (setLoginUserAddress ma time lage che etle 2 var click karvu pade che)
-// post remove karvani one approved
-// 2 vaar click kariye to 2 vaar add kari dey che array ma (remove karsu etle aa issue nai avve)
-// refresh kariye etle logout thai jaay che
-// gotta divide contracts into multiple
-// webpack 4 issues remains
-// i thik i can use metamask directly for deployment maybe and we don't need ganache anymore
+//? currnet issues:
+// * currently not using metamask directly to login as it is giving error
+//TODO: login karti vakhte (only while trying to login directly using metamask) setState na lidhe error aave che (setLoginUserAddress ma time lage che etle 2 var click karvu pade che)
+//TODO: post remove karvani once approved
+//TODO: 2 vaar click kariye to 2 vaar add kari dey che array ma (remove karsu etle aa issue nai avve)
+// ! transaction getting reverted while approving!! need to review the contract - same account mathi more than 1 post requested hoy to error ave che
+//! refresh kariye etle logout thai jaay che - maybe we can store info in local storage or we can use useEffect hook
+//TODO: gotta divide contracts into multiple
+//TODO: webpack 4 issues remains
+//* i thik i can use metamask directly for deployment maybe and we don't need ganache anymore (but we do)
 
 ///////////////////////////////////////
 
@@ -49,7 +51,7 @@ function App() {
     post: "",
     dept: "",
     name: "",
-    // userAddress: "",
+    userAddress: "",
   });
 
   // onChange function to handle member info while registration
@@ -131,7 +133,7 @@ function App() {
           memberInfo.post,
           memberInfo.dept,
           memberInfo.name,
-          accounts[0],
+          memberInfo.userAddress,
           true
         )
         .send({ from: accounts[0], gas: 2000000 });
@@ -168,21 +170,21 @@ function App() {
   const [loginUserAddress, setLoginUserAddress] = useState("");
 
   // onChange function to handle user's input while trying to login
-  // const loginInput = (e) => {
-  //   setLoginUserAddress(e.target.value);
-  // };
+  const loginInput = (e) => {
+    setLoginUserAddress(e.target.value);
+  };
 
   // login function
   const login = async () => {
     // getting available accounts
     const accounts = await ethereum.request({ method: "eth_accounts" });
-    setLoginUserAddress(accounts[0]);
+    // setLoginUserAddress(accounts[0]);
 
     // calling smart contract's function
     try {
       // checks if user exist or not
       const userExist = await Contract.methods
-        .login(accounts[0])
+        .login(loginUserAddress)
         .call({ from: accounts[0], gas: 200000 });
 
       // if user exist then - fetching user's data to show in our app
@@ -313,7 +315,7 @@ function App() {
       });
       const approvePost = await Contract.methods
         .approvePost(postCreator, loggedInUserInfo.userAddress)
-        .send({ from: accounts[0], gas: 2000000 });
+        .send({ from: accounts[0], gas: 9000000 });
 
       getPosts();
       getRequestedPosts();
@@ -340,8 +342,8 @@ function App() {
             element={
               <Login
                 login={login}
-                // loginInput={loginInput}
-                // loginUserAddress={loginUserAddress}
+                loginInput={loginInput}
+                loginUserAddress={loginUserAddress}
               />
             }
           ></Route>
