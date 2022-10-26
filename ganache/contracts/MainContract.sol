@@ -14,7 +14,7 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.7;
 
-contract Contract {
+contract MainContract {
     function recieve() external payable {}
 
     //* ///////////////////////////////////////////////// MEMBER - REQUEST, APPROVE, ADD ///////////////////////////////////////
@@ -26,7 +26,6 @@ contract Contract {
         string name;
         address userAddress;
         uint256 power;
-        PostStructure[] allPostsByUser;
     }
 
     // indexes to remove user from request array once approoved
@@ -63,7 +62,7 @@ contract Contract {
     // instance of the struct to use everywhere
     MemberStruct instanceOfMemberStruct;
 
-    // function to add or request member (true = request member | false = directly add member)
+    // function to add or request member (true = request member | false = directly add member | DEAN will be directly added as a member)
     function addOrRequestMember(
         string memory _post,
         string memory _dept,
@@ -78,6 +77,7 @@ contract Contract {
         instanceOfMemberStruct.name = _name;
         instanceOfMemberStruct.userAddress = _userAddress;
 
+        // deciding power based on type
         if (
             keccak256(abi.encodePacked(_post)) ==
             keccak256(abi.encodePacked("DEAN"))
@@ -162,7 +162,7 @@ contract Contract {
         MemberStruct memory memberTobeApproved = getRequestedMemberWithAddress[
             _userAddress
         ];
-        MemberStruct memory apprivongMember = getMemberWithAddress[
+        MemberStruct memory approvingMember = getMemberWithAddress[
             approvingUserAddress
         ];
         string memory post = memberTobeApproved.post;
@@ -170,13 +170,14 @@ contract Contract {
         string memory name = memberTobeApproved.name;
         address userAddress = memberTobeApproved.userAddress;
         uint256 requestingUserPower = memberTobeApproved.power;
-        uint256 approvongUserPower = apprivongMember.power;
+        uint256 approvingUserPower = approvingMember.power;
 
         require(
-            approvongUserPower <= requestingUserPower,
+            approvingUserPower <= requestingUserPower,
             "You can't approove someone above than you."
         );
 
+        // adding member using add member function | the difference is we're not using true here
         addOrRequestMember(post, dept, name, userAddress, false);
 
         // need to remove entry from request array
@@ -187,7 +188,7 @@ contract Contract {
         arrayOfRequestedMembers.pop();
     }
 
-    // Function to know if member exist or not
+    // Function to know if member exist or not - will be useful in login and other features
     function memberExistOrNot(address _userAddress) public view returns (bool) {
         if ((memberExist[_userAddress] == true)) {
             return true;
@@ -195,126 +196,4 @@ contract Contract {
             return false;
         }
     }
-
-    //* *** /////////////////////////////////////// AUTH CONTRACT -  LOGIN FUNCTION ///////////////////////////////////////////
-
-    // function to log in the user (MIGHT NEED SOME require STATEMENTS TO CHECK LATER - RIGHT NOW CAN'T THINK OF ANY)
-    function login(address userAddress) public view returns (bool) {
-        return memberExistOrNot(userAddress);
-    }
-
-    // * ///////////////////////////////////////////////// MEMBER - REQUEST, APPROVE, ADD ///////////////////////////////////////
-
-    // * ///////////////////////////////////////////////// POST CONTRACT - REQUEST, APPROVE, ADD ///////////////////////////////////////
-
-    // handling news posting here
-
-    struct PostStructure {
-        string postHash;
-        address postCreator;
-        // string[] postViewer;
-        bool isRequest;
-    }
-
-    PostStructure instanceOfPost;
-
-    PostStructure[] allThePosts;
-    mapping(address => PostStructure) postOfUser;
-
-    PostStructure[] allTheRequestedPosts;
-    mapping(address => PostStructure) postOfRequestingUser;
-
-    // indexes to remove user from request array once approoved
-    // uint256 requestPostIndex = 0;
-    // uint256 approvedPostIndex = 0;
-
-    // to get index of a perticual member by its address
-    // mapping(string => uint256) indexFromRequestedPost;
-    // mapping(string => uint256) indexFromApproovedPost;
-
-    function postNews(
-        string memory _postHash,
-        address _postCreator,
-        bool _isRequest
-    ) public {
-        // few required require statements
-        // user needs to be logged in
-
-        // post viewer needs to be check
-        // while mapping through all the posts, check if user exist in the postViewer array or not,
-        // for each post, and if it does, render the post else continue
-
-        instanceOfPost.postHash = _postHash;
-        instanceOfPost.postCreator = _postCreator;
-        // instanceOfPost.postViewer = _postViewer;
-        instanceOfPost.isRequest = _isRequest;
-
-        if (_isRequest != true) {
-            allThePosts.push(instanceOfPost);
-            postOfUser[_postCreator] = instanceOfPost;
-            // indexFromApproovedPost[_postHash] = approvedPostIndex;
-            // approvedPostIndex++;
-        } else {
-            allTheRequestedPosts.push(instanceOfPost);
-            postOfRequestingUser[_postCreator] = instanceOfPost;
-            // indexFromRequestedPost[_postHash] = requestPostIndex;
-            // requestPostIndex++;
-        }
-    }
-
-    function getAllPosts(bool requestedPosts)
-        public
-        view
-        returns (PostStructure[] memory)
-    {
-        if (requestedPosts) {
-            return allTheRequestedPosts;
-        } else {
-            return allThePosts;
-        }
-    }
-
-    function approvePost(address _requestedBy, address _approvedBy) public {
-        // find the post
-        PostStructure memory post = postOfRequestingUser[_requestedBy];
-
-        // compare power between requester and approver - this won't be needed as this will not be visible on student profile
-        // uint256 requestingUserPower = getRequestedMemberWithAddress[
-        //     _requestedBy
-        // ].power;
-        // uint256 approvongUserPower = getMemberWithAddress[_approvedBy].power;
-
-        // this require will not be needed as we won't show to option to approve post on student's profile
-        // require(
-        //     approvongUserPower < requestingUserPower,
-        //     "You can't approove post of someone above than you."
-        // );
-
-        //converting requested to approved
-        post.isRequest = false;
-
-        // add to the approved list
-        allThePosts.push(post);
-
-        // adding to individual user's array
-        postOfUser[_requestedBy] = post;
-
-        // removing from the requested list
-        // uint256 postIdx = indexFromRequestedPost[post.postHash];
-
-        // allTheRequestedPosts[postIdx] = allTheRequestedPosts[
-        //     allTheRequestedPosts.length - 1
-        // ];
-        // allTheRequestedPosts.pop();
-    }
-
-    function getPostsByUser(address _userAddress)
-        public
-        view
-        returns (PostStructure[] memory)
-    {
-        return getMemberWithAddress[_userAddress].allPostsByUser;
-    }
-
-    // * ///////////////////////////////////////////////// POST - REQUEST, APPROVE, ADD ///////////////////////////////////////
 }

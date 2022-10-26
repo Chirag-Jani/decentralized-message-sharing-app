@@ -4,49 +4,56 @@
 // 0x617F2E2fD72FD9D5503197092aC168c91465E7f2
 // 0x17F6AD8Ef982297579C203069C1DbfFE4348c372
 
-///////////////////////////////////////
-
 //? currnet issues:
-// * currently not using metamask directly to login as it is giving error
-//TODO: login karti vakhte (only while trying to login directly using metamask) setState na lidhe error aave che (setLoginUserAddress ma time lage che etle 2 var click karvu pade che)
-//TODO: post remove karvani once approved
-//TODO: 2 vaar click kariye to 2 vaar add kari dey che array ma (remove karsu etle aa issue nai avve)
-// ! transaction getting reverted while approving!! need to review the contract - same account mathi more than 1 post requested hoy to error ave che
-//! refresh kariye etle logout thai jaay che - maybe we can store info in local storage or we can use useEffect hook
-//TODO: gotta divide contracts into multiple
+// * currently not using metamask directly to login as it is giving error (just because setState (setLoginUserAddress) takes time and we can't use async-await with it - we need to click twice to login )
+//! refresh kariye etle logout thai jaay che - logged in user nu struct use karvu padse and later we can fetch that in useEffect hook
 //TODO: webpack 4 issues remains
-//* i thik i can use metamask directly for deployment maybe and we don't need ganache anymore (but we do)
+//TODO: to navigate to another page on login, logout, and signup
 
-///////////////////////////////////////
-
-import React, { useEffect, useState } from "react";
+// * IMPORTING DEPENDENCIES
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// importing components
+// * IMPORTING COMPONENTS
 import Navbar from "./Components/Navbar";
 import Login from "./Components/Login";
 import Signup from "./Components/Signup";
 import News from "./Components/News";
 import Profile from "./Components/Profile";
 
-// importing contract
-import Contract from "./contractInfo/Contract";
+// * IMPORTING CONTRACTS
+import {
+  mainWeb3Contract as MainContract,
+  postWeb3Contract as PostNewsContract,
+} from "./contractInfo/Contract";
 
 function App() {
-  // to navigate to another page on login, logout, and signup
+  // * TO GET AVAILABLE METHODS TO CALL - NOT NEEDED BUT LET IT BE HERE FOR A WHILE
+  // const getMethods = async () => {
+  //   // const accounts = await ethereum.request({ method: "eth_accounts" }); // getting the eth accounts
+  //   // console.log("Used Account: " + accounts);
+  //   // console.log("Account Connected: " + ethereum.isConnected());
+  //   // const availableMethods = await Contract.methods;
+  //   // console.log(availableMethods);
 
-  // state that checks if user is logged in or not
-  const [userLoggedIn, setUserLoggedIn] = useState(false);
-  // state to manage logged in user's information
-  const [loggedInUserInfo, setLoggedInUserInfo] = useState({
-    post: "",
-    dept: "",
-    name: "",
-    userAddress: "",
-    allPostsByUser: null,
-  });
+  //   console.log(
+  //     "2 contracts che etle aa function disabled rakhyu che as of now."
+  //   );
+  // };
 
-  // state to manage information of users while requestin / registration
+  // ! REQUESTING AND APPROVAL OF MEMBER FUNCTIONALITIES AND IT'S STATES
+
+  // * STATE TO HANDLE WHICH MEMBERS TO DISPLAY IN PROFILE COMPONENT
+  const [showApproovedMemberInfo, setShowApproovedMemberInfo] = useState(false);
+  const [showRequestedMemberInfo, setShowRequestedMemberInfo] = useState(false);
+
+  // * STATE OF REQUESTED MEMBERS
+  const [requestedMembersArray, setRequestedMembersArray] = useState([]);
+
+  // * STATE OF APPROVED MEMBERS
+  const [approovedMembersArray, setApproovedMembersArray] = useState([]);
+
+  // * STATE OF INPUTS WHILE REGISTRATION/REQUESTING MEMBER
   const [memberInfo, setMemberInfo] = useState({
     post: "",
     dept: "",
@@ -54,7 +61,7 @@ function App() {
     userAddress: "",
   });
 
-  // onChange function to handle member info while registration
+  // * HANDLER FUNCTION WHILE REGISTRATION
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name != "userAddress") {
@@ -71,30 +78,13 @@ function App() {
     }
   };
 
-  // getting available methods
-  const getMethods = async () => {
-    const accounts = await ethereum.request({ method: "eth_accounts" }); // getting the eth accounts
-    console.log("Used Account: " + accounts);
-    console.log("Account Connected: " + ethereum.isConnected());
-    const availableMethods = await Contract.methods;
-    console.log(availableMethods);
-
-    /////////////////////////////////////
-  };
-
-  // ///////////////////////////////////////////////////////////////////////////////////////////////////
-  const [showApproovedMemberInfo, setShowApproovedMemberInfo] = useState(false);
-  const [showRequestedMemberInfo, setShowRequestedMemberInfo] = useState(false);
-
-  // getting requested Members
-  const [requestedMembersArray, setRequestedMembersArray] = useState([]);
-
+  // * GETTING REQUESTED MEMBERS TO DISPLAY IN PROFILE COMPONENT
   const getRequestedMember = async () => {
     try {
       const accounts = await ethereum.request({
         method: "eth_accounts",
       });
-      const requestedMembers = await Contract.methods
+      const requestedMembers = await MainContract.methods
         .getApprovedOrRequestedMember(true)
         .call({ from: accounts[0], gas: 2000000 });
       setRequestedMembersArray(requestedMembers);
@@ -103,15 +93,13 @@ function App() {
     } catch (error) {
       console.log(error);
     }
-    console.log(requestedMembersArray);
   };
 
-  // getting approoved members
-  const [approovedMembersArray, setApproovedMembersArray] = useState([]);
+  // * GETTING APPROVED MEMBERS TO DISPLAY IN PROFILE COMPONENT
   const getApprovedMember = async () => {
     try {
       const accounts = await ethereum.request({ method: "eth_accounts" });
-      const approvedMembers = await Contract.methods
+      const approvedMembers = await MainContract.methods
         .getApprovedOrRequestedMember(false)
         .call({ from: accounts[0], gas: 2000000 });
 
@@ -121,14 +109,13 @@ function App() {
     } catch (error) {
       console.log(error);
     }
-    console.log(approovedMembersArray);
   };
 
-  // requesting member - registration
+  // * REQUESTING MEMBER
   const requestMember = async () => {
     const accounts = await ethereum.request({ method: "eth_accounts" });
     try {
-      const requestMember = await Contract.methods
+      const requestMember = await MainContract.methods
         .addOrRequestMember(
           memberInfo.post,
           memberInfo.dept,
@@ -140,41 +127,49 @@ function App() {
 
       setMemberInfo({ post: "", dept: "", name: "", userAddress: "" });
     } catch (err) {
-      console.log(
-        "Transaction Reverted due to Require Statement or Out Of Gas."
-      );
+      console.log(err.message);
     }
   };
 
-  // approoving member
+  // * APPROVING MEMBER
   const approoveMember = async (userAddress) => {
     const accounts = await ethereum.request({ method: "eth_accounts" });
     try {
-      const approove = await Contract.methods
+      const approove = await MainContract.methods
         .approoveRequest(userAddress, loggedInUserInfo.userAddress)
         .send({ from: accounts[0], gas: 2000000 });
-      console.log("Member Appooved");
 
       // if user is now allowed to approve user (because they are at higher position), then alert the user when the require statement is reverting the contract
       // if (!approove) {
       //   alert("na bhai");
       // }
     } catch (err) {
-      console.log(
-        "Transaction Reverted due to Require Statement or Out Of Gas." + err
-      );
+      console.log(err.message);
     }
   };
 
-  // state to manage user's input value while login
+  // ! LOGIN - LOGOUT FUNCTIONALITIES AND IT'S STATES
+
+  // * STATE TO CHECK IF USER IS LOGGED IN OR NOT
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
+
+  // * STATE TO MANAGE LOGGED IN USER'S DETAILS
+  const [loggedInUserInfo, setLoggedInUserInfo] = useState({
+    post: "",
+    dept: "",
+    name: "",
+    userAddress: "",
+  });
+
+  // * STATE TO MANAGE USER INPUT WHILE LOGIN - LATER IT WILL BE REMOVED AS WE WILL USE METAMASK TO LOGIN DIRECTLY
   const [loginUserAddress, setLoginUserAddress] = useState("");
 
-  // onChange function to handle user's input while trying to login
+  // * HANDLER FUNCTION TO MANAGE USER INPUT WHILE LOGIN
   const loginInput = (e) => {
     setLoginUserAddress(e.target.value);
   };
 
-  // login function
+  // * LOGGING USER IN
   const login = async () => {
     // getting available accounts
     const accounts = await ethereum.request({ method: "eth_accounts" });
@@ -183,13 +178,13 @@ function App() {
     // calling smart contract's function
     try {
       // checks if user exist or not
-      const userExist = await Contract.methods
-        .login(loginUserAddress)
+      const userExist = await MainContract.methods
+        .memberExistOrNot(loginUserAddress) // login functionality is not completly set yet that's why khali true or false rakhyu che
         .call({ from: accounts[0], gas: 200000 });
 
       // if user exist then - fetching user's data to show in our app
       if (userExist) {
-        const findMember = await Contract.methods
+        const findMember = await MainContract.methods
           .findMember(loginUserAddress, false)
           .call({ from: accounts[0], gas: 2000000 });
 
@@ -207,13 +202,11 @@ function App() {
       }
     } catch (err) {
       // catching errors
-      console.log(
-        "Transaction Reverted due to Require Statement or Out Of Gas." + err
-      );
+      console.log(err.message);
     }
   };
 
-  // function to logout
+  // * LOGGING USER OUT
   const logout = () => {
     setUserLoggedIn(false);
     setLoggedInUserInfo({
@@ -224,21 +217,23 @@ function App() {
     });
   };
 
-  // state to manage posted news now
+  // ! POST FUNCTIONALITIES AND IT'S STATES
+
+  // * STATE TO MANAGE APPROVED POSTS - NEEDED IN NEWS COMPONENT TO DISPLAY POSTS TO ALL THE USERS
   const [oldPosts, setOldPosts] = useState([]);
 
-  // managing requested posts
+  // * STATE TO MANAGE REQUESTED POST - NEEDED IN PROFILE COMPONENT TO APPROVE POSTS
   const [requestedPosts, setRequestedPosts] = useState([]);
 
-  // state to manage user's text while posting
+  // * STATE TO MANAGE USER'S INPUT WHILE WRITING POST
   const [postInput, setPostInput] = useState("");
 
-  // onChange function to handle user's text input
+  // * HANDLER FUNCTION TO MANAGE USER'S INPUT WHILE WRITING POST
   const handlePostInput = (e) => {
     setPostInput(e.target.value);
   };
 
-  // function to finally add new post and write on our smart contract
+  // * ADDING POST - IF NOT STUDENT THEN DIRECTLY ADD OTHERWISE REQUEST POST
   const post = async (e) => {
     e.preventDefault();
     const newPost = {
@@ -253,84 +248,72 @@ function App() {
 
       // check for user if it is student or not
       if (loggedInUserInfo.post != "STUDENT") {
-        const post = await Contract.methods
+        const post = await PostNewsContract.methods
           .postNews(postInput, loggedInUserInfo.userAddress, false)
           .send({ from: accounts[0], gas: 2000000 });
         setOldPosts([...oldPosts, newPost]);
         setPostInput("");
       } else {
-        const post = await Contract.methods
+        const post = await PostNewsContract.methods
           .postNews(postInput, loggedInUserInfo.userAddress, true)
           .send({ from: accounts[0], gas: 2000000 });
         setPostInput("");
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
-    console.log("posted");
   };
 
-  // this will fetch all the posts when the component will be loaded
-
+  // * GETTING ALL THE APPROVED POST - TO DISPLAY ON HOME/NEWS COMPONENT FOR ALL USERS
   const getPosts = async () => {
     try {
       const accounts = await ethereum.request({
         method: "eth_accounts",
       });
-      const allPosts = await Contract.methods
+      const allPosts = await PostNewsContract.methods
         .getAllPosts(false)
         .call({ from: accounts[0], gas: 2000000 });
 
       setOldPosts(allPosts);
-      console.log(oldPosts);
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
   };
 
+  // * GETTING REQUESTED POSTS - TO DISPLAY IN PROFILE COMPONENT
   const getRequestedPosts = async () => {
     try {
       const accounts = await ethereum.request({
         method: "eth_accounts",
       });
-      const allRequestedPosts = await Contract.methods
+      const allRequestedPosts = await PostNewsContract.methods
         .getAllPosts(true)
         .call({ from: accounts[0], gas: 2000000 });
 
       setRequestedPosts(allRequestedPosts);
-      console.log(allRequestedPosts);
       setShowApproovedMemberInfo(false);
       setShowRequestedMemberInfo(false);
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
   };
 
-  const approvePost = async (postCreator) => {
-    console.log("approved" + postCreator);
-
+  // * APPROVING POST
+  const approvePost = async (postIndex) => {
     try {
       const accounts = await ethereum.request({
         method: "eth_accounts",
       });
-      const approvePost = await Contract.methods
-        .approvePost(postCreator, loggedInUserInfo.userAddress)
+      const approvePost = await PostNewsContract.methods
+        .approvePost(postIndex)
         .send({ from: accounts[0], gas: 9000000 });
 
       getPosts();
       getRequestedPosts();
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
   };
-
-  // useEffect(
-  //   () => {
-  //     getAllPosts();
-  //   },
-  //   // whenever oldPosts will update, useEffect will be called
-  //   []
-  // );
 
   return (
     <div>

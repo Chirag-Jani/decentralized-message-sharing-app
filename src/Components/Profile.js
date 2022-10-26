@@ -2,13 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function Profile(props) {
-  // useEffect(() => {
-  //   // have to update stuff
-  // }, [loggedInUserInfo]);
-
   const {
     userLoggedIn,
-    getMethods,
+    // getMethods,
     getRequestedMember,
     getApprovedMember,
     requestedMembersArray,
@@ -34,29 +30,19 @@ function Profile(props) {
                 <strong>Post:</strong>
                 <strong>Department:</strong>
                 <strong>Address:</strong>
-                <strong>Your Posts:</strong>
               </div>
               <div className="col-8 text-start d-flex flex-column">
                 <strong>{loggedInUserInfo.name}</strong>
                 <strong>{loggedInUserInfo.post}</strong>
                 <strong>{loggedInUserInfo.dept}</strong>
                 <strong>{loggedInUserInfo.userAddress}</strong>
-                <strong>
-                  {loggedInUserInfo.allPostsByUser.map((post) => {
-                    return (
-                      <div>
-                        <p>{post.postData}</p>
-                      </div>
-                    );
-                  })}
-                </strong>
               </div>
             </div>
           </div>
           <div className="w-100 d-flex justify-content-evenly">
-            <button className="my-2 btn btn-primary mx-1" onClick={getMethods}>
+            {/* <button className="my-2 btn btn-primary mx-1" onClick={getMethods}>
               Get Available Methods
-            </button>
+            </button> */}
             <button
               className="my-2 btn btn-primary mx-1"
               onClick={getRequestedMember}
@@ -140,29 +126,19 @@ function Profile(props) {
                 <strong>Post:</strong>
                 <strong>Department:</strong>
                 <strong>Address:</strong>
-                <strong>Your Posts:</strong>
               </div>
               <div className="col-8 text-start d-flex flex-column">
                 <strong>{loggedInUserInfo.name}</strong>
                 <strong>{loggedInUserInfo.post}</strong>
                 <strong>{loggedInUserInfo.dept}</strong>
                 <strong>{loggedInUserInfo.userAddress}</strong>
-                <strong>
-                  {loggedInUserInfo.allPostsByUser.map((post) => {
-                    return (
-                      <div>
-                        <p>{post.postData}</p>
-                      </div>
-                    );
-                  })}
-                </strong>
               </div>
             </div>
           </div>
           <div className="w-100 d-flex justify-content-evenly">
-            <button className="my-2 btn btn-primary mx-1" onClick={getMethods}>
+            {/* <button className="my-2 btn btn-primary mx-1" onClick={getMethods}>
               Get Available Methods
-            </button>
+            </button> */}
             <button
               className="my-2 btn btn-primary mx-1"
               onClick={getRequestedMember}
@@ -261,29 +237,19 @@ function Profile(props) {
                 <strong>Post:</strong>
                 <strong>Department:</strong>
                 <strong>Address:</strong>
-                <strong>Your Posts:</strong>
               </div>
               <div className="col-8 text-start d-flex flex-column">
                 <strong>{loggedInUserInfo.name}</strong>
                 <strong>{loggedInUserInfo.post}</strong>
                 <strong>{loggedInUserInfo.dept}</strong>
                 <strong>{loggedInUserInfo.userAddress}</strong>
-                <strong>
-                  {loggedInUserInfo.allPostsByUser.map((post) => {
-                    return (
-                      <div>
-                        <p>{post.postData}</p>
-                      </div>
-                    );
-                  })}
-                </strong>
               </div>
             </div>
           </div>
           <div className="w-100 d-flex justify-content-evenly">
-            <button className="my-2 btn btn-primary mx-1" onClick={getMethods}>
+            {/* <button className="my-2 btn btn-primary mx-1" onClick={getMethods}>
               Get Available Methods
-            </button>
+            </button> */}
             <button
               className="my-2 btn btn-primary mx-1"
               onClick={getRequestedMember}
@@ -305,7 +271,7 @@ function Profile(props) {
           </div>
 
           <div className="container">
-            {requestedPosts.map((post) => {
+            {requestedPosts.map((post, idx) => {
               if (post.isRequest) {
                 return (
                   <>
@@ -321,7 +287,7 @@ function Profile(props) {
                       <button
                         className="btn btn-success my-1"
                         onClick={() => {
-                          approvePost(post.postCreator);
+                          approvePost(idx);
                         }}
                       >
                         Approve
