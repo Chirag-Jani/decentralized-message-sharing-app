@@ -5,13 +5,11 @@
 // 0x17F6AD8Ef982297579C203069C1DbfFE4348c372
 
 //? currnet issues:
-// * currently not using metamask directly to login as it is giving error (just because setState (setLoginUserAddress) takes time and we can't use async-await with it - we need to click twice to login )
 //! refresh kariye etle logout thai jaay che - logged in user nu struct use karvu padse and later we can fetch that in useEffect hook
 //TODO: webpack 4 issues remains
-//TODO: to navigate to another page on login, logout, and signup
 
 // * IMPORTING DEPENDENCIES
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // * IMPORTING COMPONENTS
@@ -25,6 +23,8 @@ import Profile from "./Components/Profile";
 import {
   mainWeb3Contract as MainContract,
   postWeb3Contract as PostNewsContract,
+  authWeb3Contract as AuthContract,
+  deployedMain,
 } from "./contractInfo/Contract";
 
 function App() {
@@ -165,22 +165,22 @@ function App() {
   const [loginUserAddress, setLoginUserAddress] = useState("");
 
   // * HANDLER FUNCTION TO MANAGE USER INPUT WHILE LOGIN
-  const loginInput = (e) => {
-    setLoginUserAddress(e.target.value);
-  };
+  // const loginInput = (e) => {
+  //   setLoginUserAddress(e.target.value);
+  // };
 
   // * LOGGING USER IN
   const login = async () => {
     // getting available accounts
     const accounts = await ethereum.request({ method: "eth_accounts" });
-    // setLoginUserAddress(accounts[0]);
 
     // calling smart contract's function
     try {
       // checks if user exist or not
-      const userExist = await MainContract.methods
-        .memberExistOrNot(loginUserAddress) // login functionality is not completly set yet that's why khali true or false rakhyu che
+      const userExist = await AuthContract.methods
+        .login(loginUserAddress, deployedMain) // login functionality is not completly set yet that's why khali true or false rakhyu che
         .call({ from: accounts[0], gas: 200000 });
+      console.log(userExist);
 
       // if user exist then - fetching user's data to show in our app
       if (userExist) {
@@ -191,14 +191,14 @@ function App() {
         setUserLoggedIn(true);
         setLoggedInUserInfo(findMember);
         // alert("Login successful!");
-        setLoginUserAddress("");
+        // setLoginUserAddress("");
         getPosts();
       }
 
       // if user does not exist
       else {
         alert("User does not exist. Request Approval First!");
-        setLoginUserAddress("");
+        // setLoginUserAddress("");
       }
     } catch (err) {
       // catching errors
@@ -253,6 +253,7 @@ function App() {
           .send({ from: accounts[0], gas: 2000000 });
         setOldPosts([...oldPosts, newPost]);
         setPostInput("");
+        getPosts();
       } else {
         const post = await PostNewsContract.methods
           .postNews(postInput, loggedInUserInfo.userAddress, true)
@@ -315,6 +316,66 @@ function App() {
     }
   };
 
+  // * useEffect to get some default values
+  useEffect(() => {
+    // * getting posts
+    getPosts();
+
+    // !!!!!!!!!!!!
+
+    //  * to get account
+    const getAccout = async () => {
+      const accounts = await ethereum.request({
+        method: "eth_accounts",
+      });
+      // * for signup
+
+      setMemberInfo({
+        ...memberInfo,
+        userAddress: accounts[0],
+      });
+
+      // * for login
+      setLoginUserAddress(accounts[0]);
+    };
+    getAccout();
+
+    // * to handle account change
+    window.ethereum.on("accountsChanged", function (accounts) {
+      // * for signup
+      setMemberInfo({
+        ...memberInfo,
+        userAddress: accounts[0],
+      });
+      // * for login
+      setLoginUserAddress(accounts[0]);
+    });
+
+    // // * to get donations
+    // const getFunds = async () => {
+    //   const accounts = await ethereum.request({
+    //     method: "eth_accounts",
+    //   });
+    //   // * onGoing
+    //   const updatedOngoingFunds = await Donation.methods
+    //     .getDonations(true)
+    //     .call({ from: accounts[0], gas: 20000000 });
+
+    //   // * updating array of ongoing donations
+    //   setOngoingFunds(updatedOngoingFunds);
+    //   // * finished
+    //   const updatedFinishedFunds = await Donation.methods
+    //     .getDonations(false)
+    //     .call({ from: accounts[0], gas: 20000000 });
+
+    //   // * updating array of ongoing donations
+    //   setFinishedFunds(updatedFinishedFunds);
+    // };
+    // getFunds();
+
+    // !!!!!!!!!!!!
+  }, []);
+
   return (
     <div>
       <Router>
@@ -325,8 +386,8 @@ function App() {
             element={
               <Login
                 login={login}
-                loginInput={loginInput}
-                loginUserAddress={loginUserAddress}
+                // loginInput={loginInput}
+                // loginUserAddress={loginUserAddress}
               />
             }
           ></Route>
@@ -349,7 +410,7 @@ function App() {
                 handlePostInput={handlePostInput}
                 post={post}
                 oldPosts={oldPosts}
-                getPosts={getPosts}
+                // getPosts={getPosts}
                 userLoggedIn={userLoggedIn}
               />
             }
@@ -360,7 +421,7 @@ function App() {
               <Profile
                 memberInfo={memberInfo}
                 setMemberInfo={setMemberInfo}
-                getMethods={getMethods}
+                // getMethods={getMethods}
                 getRequestedMember={getRequestedMember}
                 getApprovedMember={getApprovedMember}
                 userLoggedIn={userLoggedIn}

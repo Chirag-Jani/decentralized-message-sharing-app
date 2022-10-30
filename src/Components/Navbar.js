@@ -8,9 +8,11 @@ function Navbar(props) {
     return (
       <div className="container-fluid mb-5 p-0">
         <div className="d-flex justify-content-evenly bg-dark text-white w-100 p-3">
-          <button className="btn btn-danger mx-1" onClick={logout}>
-            Logout
-          </button>
+          <Link to="/login">
+            <button className="btn btn-danger mx-1" onClick={logout}>
+              Logout
+            </button>
+          </Link>
           <h4>
             <Link className="text-white" to="/">
               {" "}

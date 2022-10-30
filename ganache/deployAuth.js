@@ -1,6 +1,6 @@
 // const HDWalletProvider = require("@truffle/hdwallet-provider");
 const Web3 = require("web3");
-const compiledPostContract = require("./build/PostNewsContract.json");
+const compiledAuthContract = require("./build/AuthContract.json");
 
 // const provider = new HDWalletProvider(
 //   "arch piece seat curtain fitness tunnel oblige upper news execute lesson bounce",
@@ -15,11 +15,11 @@ const deploy = async () => {
     const accounts = await web3.eth.getAccounts();
     console.log("Attempting to deploy from account", accounts[0]);
 
-    const Contract = await new web3.eth.Contract(compiledPostContract.abi)
-      .deploy({ data: compiledPostContract.evm.bytecode.object })
+    const Contract = await new web3.eth.Contract(compiledAuthContract.abi)
+      .deploy({ data: compiledAuthContract.evm.bytecode.object })
       .send({ from: accounts[0], gas: "9000000" });
 
-    console.log("Post Contract deployed at " + Contract.options.address); // 0xbc652C46867a58dc8453fD3c0de9929cdC716bE6
+    console.log("Auth Contract deployed at " + Contract.options.address); // 0xbc652C46867a58dc8453fD3c0de9929cdC716bE6
     process.exit(0);
   } catch (err) {
     console.log(err.message);

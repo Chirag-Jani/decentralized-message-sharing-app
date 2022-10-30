@@ -12,14 +12,16 @@ function Signup(props) {
 
       <div className="container">
         <strong className="text-danger">
-          *DEAN will be directly added as Member
+          *DEAN will be directly added as Member <br />
+          *Wallet address will be taken from your current acctive account of
+          MetaMask
         </strong>
         <div className="row mt-4">
           <div className="col-3 d-flex flex-column text-end">
             <label className="mb-4">Select Role:</label>
             <label className="mb-4">Select Department:</label>
             <label className="mb-4">Name:</label>
-            <label className="mb-4">Address:</label>
+            {/* <label className="mb-4">Address:</label> */}
           </div>
           <div className="col-9 text-start">
             <div className="mb-3">
@@ -62,7 +64,7 @@ function Signup(props) {
                 value={memberInfo.name}
               />
             </div>
-            <div className="mb-3">
+            {/* <div className="mb-3">
               <input
                 className="p-1 text-center"
                 type="text"
@@ -71,11 +73,13 @@ function Signup(props) {
                 name="userAddress"
                 value={memberInfo.userAddress}
               />
-            </div>
+            </div> */}
             <div>
-              <button className="btn btn-primary" onClick={requestMember}>
-                Request Member
-              </button>
+              <Link to="/login">
+                <button className="btn btn-primary" onClick={requestMember}>
+                  Request Member
+                </button>
+              </Link>
             </div>
             <p className="mt-2">
               Already have an account? <Link to="/login">Login</Link>

@@ -20,7 +20,7 @@ const deploy = async () => {
       .deploy({ data: compiledMainContract.evm.bytecode.object })
       .send({ from: accounts[0], gas: "9000000" });
 
-    console.log("Contract deployed at " + Contract.options.address); // 0xbc652C46867a58dc8453fD3c0de9929cdC716bE6
+    console.log("Main Contract deployed at " + Contract.options.address); // 0xbc652C46867a58dc8453fD3c0de9929cdC716bE6
     process.exit(0);
   } catch (err) {
     console.log(err.message);
