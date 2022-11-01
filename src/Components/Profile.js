@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 function Profile(props) {
   const {
     userLoggedIn,
-    // getMethods,
     getRequestedMember,
     getApprovedMember,
     requestedMembersArray,
@@ -40,9 +39,6 @@ function Profile(props) {
             </div>
           </div>
           <div className="w-100 d-flex justify-content-evenly">
-            {/* <button className="my-2 btn btn-primary mx-1" onClick={getMethods}>
-              Get Available Methods
-            </button> */}
             <button
               className="my-2 btn btn-primary mx-1"
               onClick={getRequestedMember}
@@ -136,9 +132,6 @@ function Profile(props) {
             </div>
           </div>
           <div className="w-100 d-flex justify-content-evenly">
-            {/* <button className="my-2 btn btn-primary mx-1" onClick={getMethods}>
-              Get Available Methods
-            </button> */}
             <button
               className="my-2 btn btn-primary mx-1"
               onClick={getRequestedMember}
@@ -247,9 +240,6 @@ function Profile(props) {
             </div>
           </div>
           <div className="w-100 d-flex justify-content-evenly">
-            {/* <button className="my-2 btn btn-primary mx-1" onClick={getMethods}>
-              Get Available Methods
-            </button> */}
             <button
               className="my-2 btn btn-primary mx-1"
               onClick={getRequestedMember}

@@ -5,8 +5,7 @@
 // 0x17F6AD8Ef982297579C203069C1DbfFE4348c372
 
 //? currnet issues:
-//! refresh kariye etle logout thai jaay che - logged in user nu struct use karvu padse and later we can fetch that in useEffect hook
-//TODO: webpack 4 issues remains
+// * getting logged out on refresh
 
 // * IMPORTING DEPENDENCIES
 import React, { useEffect, useState } from "react";
@@ -25,22 +24,9 @@ import {
   postWeb3Contract as PostNewsContract,
   authWeb3Contract as AuthContract,
   deployedMain,
-} from "./contractInfo/Contract";
+} from "../ganache/Contract";
 
 function App() {
-  // * TO GET AVAILABLE METHODS TO CALL - NOT NEEDED BUT LET IT BE HERE FOR A WHILE
-  // const getMethods = async () => {
-  //   // const accounts = await ethereum.request({ method: "eth_accounts" }); // getting the eth accounts
-  //   // console.log("Used Account: " + accounts);
-  //   // console.log("Account Connected: " + ethereum.isConnected());
-  //   // const availableMethods = await Contract.methods;
-  //   // console.log(availableMethods);
-
-  //   console.log(
-  //     "2 contracts che etle aa function disabled rakhyu che as of now."
-  //   );
-  // };
-
   // ! REQUESTING AND APPROVAL OF MEMBER FUNCTIONALITIES AND IT'S STATES
 
   // * STATE TO HANDLE WHICH MEMBERS TO DISPLAY IN PROFILE COMPONENT
@@ -91,7 +77,7 @@ function App() {
       setShowApproovedMemberInfo(false);
       setShowRequestedMemberInfo(true);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -107,7 +93,7 @@ function App() {
       setShowApproovedMemberInfo(true);
       setShowRequestedMemberInfo(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -127,7 +113,7 @@ function App() {
 
       setMemberInfo({ post: "", dept: "", name: "", userAddress: "" });
     } catch (err) {
-      console.log(err.message);
+      console.error(err.message);
     }
   };
 
@@ -144,7 +130,7 @@ function App() {
       //   alert("na bhai");
       // }
     } catch (err) {
-      console.log(err.message);
+      console.error(err.message);
     }
   };
 
@@ -180,7 +166,6 @@ function App() {
       const userExist = await AuthContract.methods
         .login(loginUserAddress, deployedMain) // login functionality is not completly set yet that's why khali true or false rakhyu che
         .call({ from: accounts[0], gas: 200000 });
-      console.log(userExist);
 
       // if user exist then - fetching user's data to show in our app
       if (userExist) {
@@ -191,18 +176,17 @@ function App() {
         setUserLoggedIn(true);
         setLoggedInUserInfo(findMember);
         // alert("Login successful!");
-        // setLoginUserAddress("");
+
         getPosts();
       }
 
       // if user does not exist
       else {
         alert("User does not exist. Request Approval First!");
-        // setLoginUserAddress("");
       }
     } catch (err) {
       // catching errors
-      console.log(err.message);
+      console.error(err.message);
     }
   };
 
@@ -261,7 +245,7 @@ function App() {
         setPostInput("");
       }
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
     }
   };
 
@@ -277,7 +261,7 @@ function App() {
 
       setOldPosts(allPosts);
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
     }
   };
 
@@ -295,7 +279,7 @@ function App() {
       setShowApproovedMemberInfo(false);
       setShowRequestedMemberInfo(false);
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
     }
   };
 
@@ -312,7 +296,7 @@ function App() {
       getPosts();
       getRequestedPosts();
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
     }
   };
 
@@ -350,28 +334,6 @@ function App() {
       // * for login
       setLoginUserAddress(accounts[0]);
     });
-
-    // // * to get donations
-    // const getFunds = async () => {
-    //   const accounts = await ethereum.request({
-    //     method: "eth_accounts",
-    //   });
-    //   // * onGoing
-    //   const updatedOngoingFunds = await Donation.methods
-    //     .getDonations(true)
-    //     .call({ from: accounts[0], gas: 20000000 });
-
-    //   // * updating array of ongoing donations
-    //   setOngoingFunds(updatedOngoingFunds);
-    //   // * finished
-    //   const updatedFinishedFunds = await Donation.methods
-    //     .getDonations(false)
-    //     .call({ from: accounts[0], gas: 20000000 });
-
-    //   // * updating array of ongoing donations
-    //   setFinishedFunds(updatedFinishedFunds);
-    // };
-    // getFunds();
 
     // !!!!!!!!!!!!
   }, []);
@@ -421,7 +383,6 @@ function App() {
               <Profile
                 memberInfo={memberInfo}
                 setMemberInfo={setMemberInfo}
-                // getMethods={getMethods}
                 getRequestedMember={getRequestedMember}
                 getApprovedMember={getApprovedMember}
                 userLoggedIn={userLoggedIn}

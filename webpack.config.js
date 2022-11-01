@@ -10,10 +10,21 @@ module.exports = {
           loader: "babel-loader",
         },
       },
-      {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"],
-      },
+      // {
+      //   test: /\.css$/,
+      //   use: ["style-loader", "css-loader"],
+      // },
+
+      // the below was taken from web
+      // {
+      //   test: /\.css$/,
+      //   use: [
+      //     "style-loader",
+      //     {
+      //       loader: "css-loader",
+      //     },
+      //   ],
+      // },
     ],
   },
   plugins: [
@@ -23,5 +34,6 @@ module.exports = {
   ],
   devServer: {
     port: 3000,
+    historyApiFallback: true,
   },
 };

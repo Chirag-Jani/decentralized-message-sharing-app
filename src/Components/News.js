@@ -2,7 +2,7 @@ import React from "react";
 
 function News(props) {
   const {
-    loggedInUserInfo,
+    // loggedInUserInfo,
     postInput,
     handlePostInput,
     post,
