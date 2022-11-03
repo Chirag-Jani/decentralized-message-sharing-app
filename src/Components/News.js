@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { Modal, Button } from "react-bootstrap";
 
 function News(props) {
   const {
@@ -9,7 +10,16 @@ function News(props) {
     oldPosts,
     // getPosts,
     userLoggedIn,
+    getCreator,
+    cretorInfo,
   } = props;
+
+  // * to use modal
+
+  const [showModal, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   if (userLoggedIn) {
     return (
@@ -46,13 +56,27 @@ function News(props) {
           {/* <button onClick={getPosts} className="btn btn-primary">
             Get Posts
           </button> */}
-          {oldPosts.map((post) => {
+          {oldPosts.map((post, index) => {
             return (
               <>
-                <div className="border border-dark p-3 my-4 text-start">
+                <div
+                  className="border border-dark p-3 my-4 text-start"
+                  key={index}
+                >
                   <p>
                     <strong> Posted by: </strong> <br />
-                    {post.postCreator}
+                    <p
+                      className="text-primary"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Get creator Info"
+                      onClick={() => {
+                        setShow(true);
+                        getCreator(post.postCreator);
+                      }}
+                    >
+                      <u style={{ cursor: "pointer" }}>{post.postCreator}</u>
+                    </p>
                   </p>
                   <p>
                     <strong> Post Content: </strong> <br />
@@ -63,6 +87,38 @@ function News(props) {
             );
           })}
         </div>
+        {/* This modal will be displayed based on condition */}
+        <Modal show={showModal} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>The Creator Info!!</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="d-flex flex-column my-5">
+              <div className="row">
+                <div className="col-3 text-end d-flex flex-column">
+                  <p>Name:</p>
+                  <p>Post:</p>
+                  <p>Department:</p>
+                  <p>Address:</p>
+                </div>
+                <div
+                  className="col-9 text-start d-flex flex-column"
+                  style={{ marginLeft: "-15px" }}
+                >
+                  <p>{cretorInfo.name}</p>
+                  <p>{cretorInfo.post}</p>
+                  <p>{cretorInfo.dept}</p>
+                  <p>{cretorInfo.address}</p>
+                </div>
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   } else {
@@ -74,13 +130,27 @@ function News(props) {
           {/* <button onClick={getPosts} className="btn btn-primary">
             Get Posts
           </button> */}
-          {oldPosts.map((post) => {
+          {oldPosts.map((post, index) => {
             return (
               <>
-                <div className="border border-dark p-3 my-4 text-start">
+                <div
+                  className="border border-dark p-3 my-4 text-start"
+                  key={index}
+                >
                   <p>
                     <strong> Posted by: </strong> <br />
-                    {post.postCreator}
+                    <p
+                      className="text-primary"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Get creator Info"
+                      onClick={() => {
+                        setShow(true);
+                        getCreator(post.postCreator);
+                      }}
+                    >
+                      <u style={{ cursor: "pointer" }}>{post.postCreator}</u>
+                    </p>
                   </p>
                   <p>
                     <strong> Post Content: </strong> <br />
@@ -91,6 +161,38 @@ function News(props) {
             );
           })}
         </div>
+        {/* This modal will be displayed based on condition */}
+        <Modal show={showModal} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>The Creator Info!!</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="d-flex flex-column my-5">
+              <div className="row">
+                <div className="col-3 text-end d-flex flex-column">
+                  <p>Name:</p>
+                  <p>Post:</p>
+                  <p>Department:</p>
+                  <p>Address:</p>
+                </div>
+                <div
+                  className="col-9 text-start d-flex flex-column"
+                  style={{ marginLeft: "-15px" }}
+                >
+                  <p>{cretorInfo.name}</p>
+                  <p>{cretorInfo.post}</p>
+                  <p>{cretorInfo.dept}</p>
+                  <p>{cretorInfo.address}</p>
+                </div>
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }

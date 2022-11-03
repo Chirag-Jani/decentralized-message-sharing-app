@@ -4,9 +4,9 @@ const authContract = require("./build/AuthContract.json");
 const mainContract = require("./build/MainContract.json");
 const postContract = require("./build/PostNewsContract.json");
 
-const deployedAuth = "0x4C50E197b4e09e7E8b54De74264C9a020A9B549e";
-const deployedMain = "0xE64a617f0271e9B376A5B6A23cDC66E398Ec60AC";
-const deployedPost = "0xaE11b25372907df1f398B7a3a87Ba369c771BFBA";
+const deployedAuth = "0xB6008CE69630eE656ec75c460Bacc665D9f3D6e1";
+const deployedMain = "0x4E77436C563F36FC8cc4F1096A5717b76dd7fD5d";
+const deployedPost = "0x334C86746Ca6B201d51AB8AADc5431012D06ef80";
 
 const authWeb3Contract = new web3.eth.Contract(authContract.abi, deployedAuth);
 const mainWeb3Contract = new web3.eth.Contract(mainContract.abi, deployedMain);

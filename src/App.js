@@ -27,6 +27,36 @@ import {
 } from "../ganache/Contract";
 
 function App() {
+  //
+  const [cretorInfo, setCretorInfo] = useState({
+    name: "",
+    address: "",
+    post: "",
+    dept: "",
+  });
+  const getCreator = async (creatorAddress) => {
+    try {
+      const accounts = await ethereum.request({
+        method: "eth_accounts",
+      });
+
+      const findMember = await MainContract.methods
+        .findMember(creatorAddress, false)
+        .call({ from: accounts[0], gas: 2000000 });
+
+      // const [name, post, dept, userAddress] = findmember;
+
+      setCretorInfo({
+        name: findMember.name,
+        address: findMember.userAddress,
+        post: findMember.post,
+        dept: findMember.dept,
+      });
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
   // ! REQUESTING AND APPROVAL OF MEMBER FUNCTIONALITIES AND IT'S STATES
 
   // * STATE TO HANDLE WHICH MEMBERS TO DISPLAY IN PROFILE COMPONENT
@@ -374,6 +404,8 @@ function App() {
                 oldPosts={oldPosts}
                 // getPosts={getPosts}
                 userLoggedIn={userLoggedIn}
+                getCreator={getCreator}
+                cretorInfo={cretorInfo}
               />
             }
           ></Route>
