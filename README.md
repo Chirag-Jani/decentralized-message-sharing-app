@@ -66,7 +66,12 @@ $ npm start
 
 7. Log in your MetaMask and import the demo accounts to interact with the App.
 
-As we ran the 'ganache' blockchain locally, ganache provides us 10 account with 1000 ETH in each.
+- As we ran the 'ganache' blockchain locally, ganache provides us 10 account with 1000 ETH in each.
+
 Addresses and Private Keys will be provided.
+
 Copy the private key and import the account in your MetaMask.
+
 For more information [click here](https://www.geeksforgeeks.org/how-to-set-up-ganche-with-metamask/)
+
+8. Now, your environment is set to run the app and interact with it.
