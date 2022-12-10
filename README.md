@@ -6,7 +6,11 @@
 
 2. Clone the Project
 
-`git clone git@github.com:Chirag-Jani/decentralized-message-sharing-app.git`
+`
+""
+git clone git@github.com:Chirag-Jani/decentralized-message-sharing-app.git
+""
+`
 
 3. Install all the Dependencies
 
