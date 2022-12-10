@@ -1,14 +1,10 @@
 # Blockchain Based Message Sharing Application
 
----
-
 ## How it is implemented? and How it Works?
 
 Please read the paper: []() to understand.
 
 ## Instructions to run
-
----
 
 1. Install Prerequisites
 
@@ -38,7 +34,7 @@ $ ganache
 
 5. Compile and deploy the smart contracts on the local blockchain
 
-- Compile using
+- Compile using,
 
 ```
 $ cd ganache
@@ -68,4 +64,9 @@ $ node deoloyAuth.js
 $ npm start
 ```
 
-7. Now, you are ready to use the platform.
+7. Log in your MetaMask and import the demo accounts to interact with the App.
+
+As we ran the 'ganache' blockchain locally, ganache provides us 10 account with 1000 ETH in each.
+Addresses and Private Keys will be provided.
+Copy the private key and import the account in your MetaMask.
+For more information [click here](https://www.geeksforgeeks.org/how-to-set-up-ganche-with-metamask/)
