@@ -78,5 +78,4 @@ $ npm start
 
 
 Note: Here, we have assumed that users with type "Dean" are registered by the government bodies initially. Though for the sake of testing we have kept them as a normal user but instead of waiting for approval, these user will directly be able to post on the app and approve other members and requested posts.
-
-The code containing that option is commented in the "SignUp.js" file located at "src/components/", you can remove the comment and test by yourself.
+The code containing that option is commented in the "Signup.js" file located at "src/Components/" line 37. You can remove the comment and test by yourself.
