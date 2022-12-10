@@ -7,26 +7,21 @@
 2. Clone the Project
 
 ```
-git clone git@github.com:Chirag-Jani/decentralized-message-sharing-app.git
-
+$ git clone git@github.com:Chirag-Jani/decentralized-message-sharing-app.git
 ```
 
 3. Install all the Dependencies
 
 ```
+$ cd decentralized-message-sharing-app
 
-cd decentralized-message-sharing-app
-
-npm install
-
+$ npm install
 ```
 
 4. Run the local blockchain using ganache (run the given command)
 
 ```
-
 $ ganache
-
 ```
 
 5. Compile and deploy the smart contracts on the local blockchain
@@ -34,23 +29,19 @@ $ ganache
 - Compile using
 
 ```
+$ cd ganache
 
-cd ganache
-
-node compile
-
+$ node compile
 ```
 
 - Deploy using,
 
 ```
+$ node deoloyAuth.js
 
-node deoloyAuth.js
+$ node deoloyAuth.js
 
-node deoloyAuth.js
-
-node deoloyAuth.js
-
+$ node deoloyAuth.js
 ```
 
 - You will see addresses of the deployed contracts on the terminal
@@ -61,9 +52,7 @@ node deoloyAuth.js
 - open terminal pointed to '/decentralized-message-sharing-app' and run command
 
 ```
-
-npm start
-
+$ npm start
 `
 
 7. Now, you are ready to use the platform.
