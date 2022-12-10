@@ -4,7 +4,7 @@
 
 ## How it is implemented? and How it Works?
 
-## Please read the paper: []() to understand.
+Please read the paper: []() to understand.
 
 ## Instructions to run
 
