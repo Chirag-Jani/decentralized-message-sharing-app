@@ -12,7 +12,7 @@ function Signup(props) {
 
       <div className="container">
         <strong className="text-danger">
-          *DEAN will be directly added as Member <br />
+          {/* *DEAN will be directly added as Member <br /> */}
           *Wallet address will be taken from your current acctive account of
           MetaMask
         </strong>
@@ -34,7 +34,7 @@ function Signup(props) {
                 value={memberInfo.post}
               >
                 <option defaultValue={true}>Select Role</option>
-                <option value="DEAN">DEAN</option>
+                {/* <option value="DEAN">DEAN</option> */}
                 <option value="HOD">HOD</option>
                 <option value="STAFF">STAFF</option>
                 <option value="STUDENT">STUDENT</option>
@@ -48,7 +48,7 @@ function Signup(props) {
                 name="dept"
                 value={memberInfo.dept}
               >
-                <option defaultValue={true}>Select Role</option>
+                <option defaultValue={true}>Select Department</option>
                 <option value="CGPIT">CGPIT</option>
                 <option value="BMIIT">BMIIT</option>
                 <option value="SRIMCA">SCRIMCA</option>
