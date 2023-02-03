@@ -26,7 +26,7 @@ function Profile(props) {
             <div className="row">
               <div className="col-4 text-end d-flex flex-column">
                 <strong>Name:</strong>
-                <strong>Post:</strong>
+                <strong>Designation:</strong>
                 <strong>Department:</strong>
                 <strong>Address:</strong>
               </div>
@@ -51,12 +51,16 @@ function Profile(props) {
             >
               Get Members
             </button>
-            <button
-              className="my-2 btn btn-primary mx-1"
-              onClick={getRequestedPosts}
-            >
-              Get Requested Posts
-            </button>
+            {loggedInUserInfo.post != "STUDENT" ? (
+              <button
+                className="my-2 btn btn-primary mx-1"
+                onClick={getRequestedPosts}
+              >
+                Get Requested Posts
+              </button>
+            ) : (
+              <p></p>
+            )}
           </div>
 
           <div className="container">
@@ -65,7 +69,7 @@ function Profile(props) {
                 <tr>
                   <th>#</th>
                   <th>Name</th>
-                  <th>Post</th>
+                  <th>Designation</th>
                   <th>Department</th>
                   <th>Address</th>
                   <th>Power</th>
@@ -119,7 +123,7 @@ function Profile(props) {
             <div className="row">
               <div className="col-4 text-end d-flex flex-column">
                 <strong>Name:</strong>
-                <strong>Post:</strong>
+                <strong>Designation:</strong>
                 <strong>Department:</strong>
                 <strong>Address:</strong>
               </div>
@@ -144,12 +148,16 @@ function Profile(props) {
             >
               Get Members
             </button>
-            <button
-              className="my-2 btn btn-primary mx-1"
-              onClick={getRequestedPosts}
-            >
-              Get Requested Posts
-            </button>
+            {loggedInUserInfo.post != "STUDENT" ? (
+              <button
+                className="my-2 btn btn-primary mx-1"
+                onClick={getRequestedPosts}
+              >
+                Get Requested Posts
+              </button>
+            ) : (
+              <p></p>
+            )}
           </div>
 
           <div className="container">
@@ -158,7 +166,7 @@ function Profile(props) {
                 <tr>
                   <th>#</th>
                   <th>Name</th>
-                  <th>Post</th>
+                  <th>Designation</th>
                   <th>Department</th>
                   <th>Address</th>
                   <th>Power</th>
@@ -227,7 +235,7 @@ function Profile(props) {
             <div className="row">
               <div className="col-4 text-end d-flex flex-column">
                 <strong>Name:</strong>
-                <strong>Post:</strong>
+                <strong>Designation:</strong>
                 <strong>Department:</strong>
                 <strong>Address:</strong>
               </div>
@@ -252,12 +260,16 @@ function Profile(props) {
             >
               Get Members
             </button>
-            <button
-              className="my-2 btn btn-primary mx-1"
-              onClick={getRequestedPosts}
-            >
-              Get Requested Posts
-            </button>
+            {loggedInUserInfo.post != "STUDENT" ? (
+              <button
+                className="my-2 btn btn-primary mx-1"
+                onClick={getRequestedPosts}
+              >
+                Get Requested Posts
+              </button>
+            ) : (
+              <p></p>
+            )}
           </div>
 
           <div className="container">

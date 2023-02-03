@@ -5,8 +5,11 @@ contract PostNewsContract {
     struct PostStructure {
         string postHash;
         address postCreator;
+        address[] sharedBy;
         // string[] postViewer;
         bool isRequest;
+        uint256 time;
+        uint256 blockNumber;
     }
 
     // setting instance of the post structure
@@ -36,6 +39,7 @@ contract PostNewsContract {
     function postNews(
         string memory _postHash,
         address _postCreator,
+        address _sharedBy,
         bool _isRequest
     ) public {
         // few required require statements
@@ -47,8 +51,11 @@ contract PostNewsContract {
 
         instanceOfPost.postHash = _postHash;
         instanceOfPost.postCreator = _postCreator;
+        instanceOfPost.sharedBy.push(_sharedBy);
         // instanceOfPost.postViewer = _postViewer;
         instanceOfPost.isRequest = _isRequest;
+        instanceOfPost.time = block.timestamp;
+        instanceOfPost.blockNumber = block.number;
 
         // if not request - add directly
         if (_isRequest != true) {
@@ -120,5 +127,20 @@ contract PostNewsContract {
         returns (PostStructure[] memory)
     {
         return postOfUser[_userAddress];
+    }
+
+    // /////////////// reshare //////////////////
+    function reshare(uint256 postIndex) public {
+        PostStructure memory p = allThePosts[postIndex];
+        postNews(p.postHash, p.postCreator, msg.sender, false);
+    }
+
+    function getShares(uint256 postIndex)
+        public
+        view
+        returns (PostStructure memory)
+    {
+        PostStructure memory p = allThePosts[postIndex];
+        return p;
     }
 }

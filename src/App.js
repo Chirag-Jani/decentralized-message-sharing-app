@@ -26,6 +26,14 @@ import {
   deployedMain,
 } from "../ganache/Contract";
 
+// // * nft storage imports
+// import { NFTStorage, File, Blob } from "nft.storage";
+
+// // !
+// const NFT_STORAGE_TOKEN =
+//   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDQwQjI4NTc2QjI2NThiNTJBOUJjQ2Y5MzRGNDg1MDkxOUEwNzlEMkYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY3NDk4OTI1ODcyMSwibmFtZSI6IkRNQXBwIn0.hZKkmeCVfTz-NdN4-QYqqNe06CTYCrM_Pp3OtvucsfA";
+// const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
+
 function App() {
   //
   const [cretorInfo, setCretorInfo] = useState({
@@ -142,6 +150,7 @@ function App() {
         .send({ from: accounts[0], gas: 2000000 });
 
       setMemberInfo({ post: "", dept: "", name: "", userAddress: "" });
+      alert("Request Successful!");
     } catch (err) {
       console.error(err.message);
     }
@@ -154,6 +163,8 @@ function App() {
       const approove = await MainContract.methods
         .approoveRequest(userAddress, loggedInUserInfo.userAddress)
         .send({ from: accounts[0], gas: 2000000 });
+
+      alert("Member Approoved!");
 
       // if user is now allowed to approve user (because they are at higher position), then alert the user when the require statement is reverting the contract
       // if (!approove) {
@@ -196,7 +207,7 @@ function App() {
       // checks if user exist or not
       const userExist = await AuthContract.methods
         .login(loginUserAddress, deployedMain) // login functionality is not completly set yet that's why khali true or false rakhyu che
-        .call({ from: accounts[0], gas: 200000 });
+        .call({ from: accounts[0], gas: 2000000 });
 
       // if user exist then - fetching user's data to show in our app
       if (userExist) {
@@ -206,7 +217,7 @@ function App() {
 
         setUserLoggedIn(true);
         setLoggedInUserInfo(findMember);
-        // alert("Login successful!");
+        alert("Login successful!");
 
         getPosts();
       }
@@ -230,6 +241,7 @@ function App() {
       name: "",
       userAddress: "",
     });
+    alert("Logged Out Successfully!");
   };
 
   // ! POST FUNCTIONALITIES AND IT'S STATES
@@ -244,7 +256,20 @@ function App() {
   const [postInput, setPostInput] = useState("");
 
   // * HANDLER FUNCTION TO MANAGE USER'S INPUT WHILE WRITING POST
-  const handlePostInput = (e) => {
+  const handlePostInput = async (e) => {
+    // ! do the converting and ading stuff here and then set post input
+
+    // const img = new File([], "Name", { type: "image/png" });
+    // const metaData = await client.store({
+    //   name: "Jani",
+    //   description: "New Post",
+    //   image: img,
+    // });
+
+    // const someData = new Blob([e.target.value]);
+    // const cid = await client.storeBlob(someData);
+    // console.log(cid);
+
     setPostInput(e.target.value);
   };
 
@@ -264,17 +289,46 @@ function App() {
       // check for user if it is student or not
       if (loggedInUserInfo.post != "STUDENT") {
         const post = await PostNewsContract.methods
-          .postNews(postInput, loggedInUserInfo.userAddress, false)
+          .postNews(
+            postInput,
+            loggedInUserInfo.userAddress, // ! changed here
+            loggedInUserInfo.userAddress,
+            false
+          )
           .send({ from: accounts[0], gas: 2000000 });
         setOldPosts([...oldPosts, newPost]);
         setPostInput("");
         getPosts();
+        alert("News Shared Successfully!");
       } else {
         const post = await PostNewsContract.methods
-          .postNews(postInput, loggedInUserInfo.userAddress, true)
+          .postNews(
+            postInput,
+            loggedInUserInfo.userAddress, // ! changed here
+            loggedInUserInfo.userAddress,
+            true
+          )
           .send({ from: accounts[0], gas: 2000000 });
         setPostInput("");
+        alert("Post Requested, Waiting for approval.");
       }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  // ! repost code
+  const reshare = async (idx) => {
+    try {
+      const accounts = await ethereum.request({
+        method: "eth_accounts",
+      });
+      const repost = await PostNewsContract.methods.reshare(idx).send({
+        from: accounts[0],
+        gas: 2000000,
+      });
+      getPosts();
+      alert("Post Re-Shared successfully!");
     } catch (error) {
       console.error(error.message);
     }
@@ -326,6 +380,7 @@ function App() {
 
       getPosts();
       getRequestedPosts();
+      alert("Post Approved!");
     } catch (error) {
       console.error(error.message);
     }
@@ -364,6 +419,8 @@ function App() {
       });
       // * for login
       setLoginUserAddress(accounts[0]);
+      // * to log out the user
+      window.location.reload();
     });
 
     // !!!!!!!!!!!!
@@ -407,6 +464,7 @@ function App() {
                 userLoggedIn={userLoggedIn}
                 getCreator={getCreator}
                 cretorInfo={cretorInfo}
+                reshare={reshare}
               />
             }
           ></Route>

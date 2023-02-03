@@ -62,6 +62,7 @@ function Signup(props) {
                 onChange={(e) => handleChange(e)}
                 name="name"
                 value={memberInfo.name}
+                autoComplete="off"
               />
             </div>
             {/* <div className="mb-3">

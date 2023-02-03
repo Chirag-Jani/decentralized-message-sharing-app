@@ -1,5 +1,12 @@
 import React, { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
+// * IMPORTING CONTRACTS
+import {
+  mainWeb3Contract as MainContract,
+  postWeb3Contract as PostNewsContract,
+  authWeb3Contract as AuthContract,
+  deployedMain,
+} from "../../ganache/Contract";
 
 function News(props) {
   const {
@@ -12,6 +19,7 @@ function News(props) {
     userLoggedIn,
     getCreator,
     cretorInfo,
+    reshare,
   } = props;
 
   // * to use modal
@@ -20,6 +28,37 @@ function News(props) {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  // ! to get date
+
+  const getPostDate = (time) => {
+    let d = new Date(parseInt(time) * 1000).toDateString();
+    let t = new Date(parseInt(time) * 1000).toTimeString();
+    return (
+      <>
+        {d} <br /> {t};
+      </>
+    );
+  };
+
+  const [shares, setShares] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const getShares = async (index) => {
+    setSelectedIndex(index);
+    try {
+      const accounts = await ethereum.request({
+        method: "eth_accounts",
+      });
+
+      const s = await PostNewsContract.methods
+        .getShares(index)
+        .call({ from: accounts[0], gas: 2000000 });
+      setShares(s.sharedBy);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
 
   if (userLoggedIn) {
     return (
@@ -44,6 +83,7 @@ function News(props) {
             className="mx-2 rounded-1 text-center"
             value={postInput}
             onChange={handlePostInput}
+            autoComplete="off"
           />
           <button className="btn btn-primary mx-2 rounded-1" onClick={post}>
             Post
@@ -56,36 +96,97 @@ function News(props) {
           {/* <button onClick={getPosts} className="btn btn-primary">
             Get Posts
           </button> */}
-          {oldPosts.map((post, index) => {
-            return (
-              <>
-                <div
-                  className="border border-dark p-3 my-4 text-start"
-                  key={index}
-                >
-                  <p>
-                    <strong> Posted by: </strong> <br />
-                    <p
-                      className="text-primary"
-                      data-toggle="tooltip"
-                      data-placement="top"
-                      title="Get creator Info"
+          {oldPosts
+            .slice(0)
+            .reverse()
+            .map((post, index) => {
+              return (
+                <>
+                  <div
+                    className="border border-dark p-3 my-4 text-start"
+                    key={index}
+                  >
+                    <p>
+                      <strong> Original Creator: </strong> <br />
+                      <p
+                        className="text-primary"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="Get creator Info"
+                        onClick={() => {
+                          setShow(true);
+                          getCreator(post.postCreator);
+                        }}
+                      >
+                        <u
+                          style={{ cursor: "pointer", textDecoration: "none" }}
+                        >
+                          {post.postCreator}
+                        </u>
+                      </p>
+                    </p>
+                    <p>
+                      <button
+                        className="btn btn-primary my-1 mb-2"
+                        onClick={() => {
+                          getShares(index);
+                        }}
+                      >
+                        Get Shares
+                      </button>
+                      <br />
+                      {selectedIndex == index ? (
+                        shares.map((addr, index) => {
+                          return (
+                            <p
+                              className="text-primary"
+                              data-toggle="tooltip"
+                              data-placement="top"
+                              title="Get creator Info"
+                              onClick={() => {
+                                setShow(true);
+                                getCreator(addr);
+                              }}
+                              key={index}
+                              style={{
+                                textDecoration: "none",
+                                cursor: "pointer",
+                              }}
+                            >
+                              {index + 1}. {addr}
+                            </p>
+                          );
+                        })
+                      ) : (
+                        <></>
+                      )}
+                    </p>
+
+                    <p>
+                      <strong>Block TimeStamp:</strong>
+                      <p>{getPostDate(post.time)}</p>
+                    </p>
+                    <p>
+                      <strong>Block Number:</strong>
+                      <p>{post.blockNumber}</p>
+                    </p>
+
+                    <p>
+                      <strong> Post Content: </strong> <br />
+                      {post.postHash}
+                    </p>
+                    <button
+                      className="btn btn-success me-2 rounded-1"
                       onClick={() => {
-                        setShow(true);
-                        getCreator(post.postCreator);
+                        reshare(index);
                       }}
                     >
-                      <u style={{ cursor: "pointer" }}>{post.postCreator}</u>
-                    </p>
-                  </p>
-                  <p>
-                    <strong> Post Content: </strong> <br />
-                    {post.postHash}
-                  </p>
-                </div>
-              </>
-            );
-          })}
+                      Re-Post
+                    </button>
+                  </div>
+                </>
+              );
+            })}
         </div>
         {/* This modal will be displayed based on condition */}
         <Modal show={showModal} onHide={handleClose}>
@@ -97,7 +198,7 @@ function News(props) {
               <div className="row">
                 <div className="col-3 text-end d-flex flex-column">
                   <p>Name:</p>
-                  <p>Post:</p>
+                  <p>Designation:</p>
                   <p>Department:</p>
                   <p>Address:</p>
                 </div>
@@ -125,41 +226,92 @@ function News(props) {
     return (
       <div className="App container text-center">
         <h1>News you need to know!</h1>
-
         <div className="">
           {/* <button onClick={getPosts} className="btn btn-primary">
             Get Posts
           </button> */}
-          {oldPosts.map((post, index) => {
-            return (
-              <>
-                <div
-                  className="border border-dark p-3 my-4 text-start"
-                  key={index}
-                >
-                  <p>
-                    <strong> Posted by: </strong> <br />
-                    <p
-                      className="text-primary"
-                      data-toggle="tooltip"
-                      data-placement="top"
-                      title="Get creator Info"
-                      onClick={() => {
-                        setShow(true);
-                        getCreator(post.postCreator);
-                      }}
-                    >
-                      <u style={{ cursor: "pointer" }}>{post.postCreator}</u>
+          {oldPosts
+            .slice(0)
+            .reverse()
+            .map((post, index) => {
+              return (
+                <>
+                  <div
+                    className="border border-dark p-3 my-4 text-start"
+                    key={index}
+                  >
+                    <p>
+                      <strong> Original Creator: </strong> <br />
+                      <p
+                        className="text-primary"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="Get creator Info"
+                        onClick={() => {
+                          setShow(true);
+                          getCreator(post.postCreator);
+                        }}
+                      >
+                        <u
+                          style={{ cursor: "pointer", textDecoration: "none" }}
+                        >
+                          {post.postCreator}
+                        </u>
+                      </p>
                     </p>
-                  </p>
-                  <p>
-                    <strong> Post Content: </strong> <br />
-                    {post.postHash}
-                  </p>
-                </div>
-              </>
-            );
-          })}
+                    <p>
+                      <button
+                        className="btn btn-primary my-1 mb-2"
+                        onClick={() => {
+                          getShares(index);
+                        }}
+                      >
+                        Get Shares
+                      </button>
+                      <br />
+                      {selectedIndex == index ? (
+                        shares.map((addr, index) => {
+                          return (
+                            <p
+                              className="text-primary"
+                              data-toggle="tooltip"
+                              data-placement="top"
+                              title="Get creator Info"
+                              onClick={() => {
+                                setShow(true);
+                                getCreator(addr);
+                              }}
+                              key={index}
+                              style={{
+                                textDecoration: "none",
+                                cursor: "pointer",
+                              }}
+                            >
+                              {index + 1}. {addr}
+                            </p>
+                          );
+                        })
+                      ) : (
+                        <></>
+                      )}
+                    </p>
+                    <p>
+                      <strong>Block TimeStamp:</strong>
+                      <p>{getPostDate(post.time)}</p>
+                    </p>
+                    <p>
+                      <strong>Block Number:</strong>
+                      <p>{post.blockNumber}</p>
+                    </p>
+
+                    <p>
+                      <strong> Post Content: </strong> <br />
+                      {post.postHash}
+                    </p>
+                  </div>
+                </>
+              );
+            })}
         </div>
         {/* This modal will be displayed based on condition */}
         <Modal show={showModal} onHide={handleClose}>
@@ -171,7 +323,7 @@ function News(props) {
               <div className="row">
                 <div className="col-3 text-end d-flex flex-column">
                   <p>Name:</p>
-                  <p>Post:</p>
+                  <p>Designation:</p>
                   <p>Department:</p>
                   <p>Address:</p>
                 </div>
