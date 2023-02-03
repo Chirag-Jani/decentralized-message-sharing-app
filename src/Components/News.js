@@ -96,97 +96,92 @@ function News(props) {
           {/* <button onClick={getPosts} className="btn btn-primary">
             Get Posts
           </button> */}
-          {oldPosts
-            .slice(0)
-            .reverse()
-            .map((post, index) => {
-              return (
-                <>
-                  <div
-                    className="border border-dark p-3 my-4 text-start"
-                    key={index}
-                  >
-                    <p>
-                      <strong> Original Creator: </strong> <br />
-                      <p
-                        className="text-primary"
-                        data-toggle="tooltip"
-                        data-placement="top"
-                        title="Get creator Info"
-                        onClick={() => {
-                          setShow(true);
-                          getCreator(post.postCreator);
-                        }}
-                      >
-                        <u
-                          style={{ cursor: "pointer", textDecoration: "none" }}
-                        >
-                          {post.postCreator}
-                        </u>
-                      </p>
-                    </p>
-                    <p>
-                      <button
-                        className="btn btn-primary my-1 mb-2"
-                        onClick={() => {
-                          getShares(index);
-                        }}
-                      >
-                        Get Shares
-                      </button>
-                      <br />
-                      {selectedIndex == index ? (
-                        shares.map((addr, index) => {
-                          return (
-                            <p
-                              className="text-primary"
-                              data-toggle="tooltip"
-                              data-placement="top"
-                              title="Get creator Info"
-                              onClick={() => {
-                                setShow(true);
-                                getCreator(addr);
-                              }}
-                              key={index}
-                              style={{
-                                textDecoration: "none",
-                                cursor: "pointer",
-                              }}
-                            >
-                              {index + 1}. {addr}
-                            </p>
-                          );
-                        })
-                      ) : (
-                        <></>
-                      )}
-                    </p>
-
-                    <p>
-                      <strong>Block TimeStamp:</strong>
-                      <p>{getPostDate(post.time)}</p>
-                    </p>
-                    <p>
-                      <strong>Block Number:</strong>
-                      <p>{post.blockNumber}</p>
-                    </p>
-
-                    <p>
-                      <strong> Post Content: </strong> <br />
-                      {post.postHash}
-                    </p>
-                    <button
-                      className="btn btn-success me-2 rounded-1"
+          {oldPosts.map((post, index) => {
+            return (
+              <>
+                <div
+                  className="border border-dark p-3 my-4 text-start"
+                  key={index}
+                >
+                  <p>
+                    <strong> Original Creator: </strong> <br />
+                    <p
+                      className="text-primary"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Get creator Info"
                       onClick={() => {
-                        reshare(index);
+                        setShow(true);
+                        getCreator(post.postCreator);
                       }}
                     >
-                      Re-Post
+                      <u style={{ cursor: "pointer", textDecoration: "none" }}>
+                        {post.postCreator}
+                      </u>
+                    </p>
+                  </p>
+                  <p>
+                    <button
+                      className="btn btn-primary my-1 mb-2"
+                      onClick={() => {
+                        getShares(index);
+                      }}
+                    >
+                      Get Shares
                     </button>
-                  </div>
-                </>
-              );
-            })}
+                    <br />
+                    {selectedIndex == index ? (
+                      shares.map((addr, index) => {
+                        return (
+                          <p
+                            className="text-primary"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title="Get creator Info"
+                            onClick={() => {
+                              setShow(true);
+                              getCreator(addr);
+                            }}
+                            key={index}
+                            style={{
+                              textDecoration: "none",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {index + 1}. {addr}
+                          </p>
+                        );
+                      })
+                    ) : (
+                      <></>
+                    )}
+                  </p>
+
+                  <p>
+                    <strong>Block TimeStamp:</strong>
+                    <p>{getPostDate(post.time)}</p>
+                  </p>
+                  <p>
+                    <strong>Block Number:</strong>
+                    <p>{post.blockNumber}</p>
+                  </p>
+
+                  <p>
+                    <strong> Post Content: </strong> <br />
+                    {post.postHash}
+                  </p>
+                  <button
+                    className="btn btn-success me-2 rounded-1"
+                    onClick={() => {
+                      reshare(index);
+                    }}
+                  >
+                    Re-Post
+                  </button>
+                </div>
+              </>
+            );
+          })}
         </div>
         {/* This modal will be displayed based on condition */}
         <Modal show={showModal} onHide={handleClose}>
@@ -230,88 +225,83 @@ function News(props) {
           {/* <button onClick={getPosts} className="btn btn-primary">
             Get Posts
           </button> */}
-          {oldPosts
-            .slice(0)
-            .reverse()
-            .map((post, index) => {
-              return (
-                <>
-                  <div
-                    className="border border-dark p-3 my-4 text-start"
-                    key={index}
-                  >
-                    <p>
-                      <strong> Original Creator: </strong> <br />
-                      <p
-                        className="text-primary"
-                        data-toggle="tooltip"
-                        data-placement="top"
-                        title="Get creator Info"
-                        onClick={() => {
-                          setShow(true);
-                          getCreator(post.postCreator);
-                        }}
-                      >
-                        <u
-                          style={{ cursor: "pointer", textDecoration: "none" }}
-                        >
-                          {post.postCreator}
-                        </u>
-                      </p>
+          {oldPosts.map((post, index) => {
+            return (
+              <>
+                <div
+                  className="border border-dark p-3 my-4 text-start"
+                  key={index}
+                >
+                  <p>
+                    <strong> Original Creator: </strong> <br />
+                    <p
+                      className="text-primary"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      title="Get creator Info"
+                      onClick={() => {
+                        setShow(true);
+                        getCreator(post.postCreator);
+                      }}
+                    >
+                      <u style={{ cursor: "pointer", textDecoration: "none" }}>
+                        {post.postCreator}
+                      </u>
                     </p>
-                    <p>
-                      <button
-                        className="btn btn-primary my-1 mb-2"
-                        onClick={() => {
-                          getShares(index);
-                        }}
-                      >
-                        Get Shares
-                      </button>
-                      <br />
-                      {selectedIndex == index ? (
-                        shares.map((addr, index) => {
-                          return (
-                            <p
-                              className="text-primary"
-                              data-toggle="tooltip"
-                              data-placement="top"
-                              title="Get creator Info"
-                              onClick={() => {
-                                setShow(true);
-                                getCreator(addr);
-                              }}
-                              key={index}
-                              style={{
-                                textDecoration: "none",
-                                cursor: "pointer",
-                              }}
-                            >
-                              {index + 1}. {addr}
-                            </p>
-                          );
-                        })
-                      ) : (
-                        <></>
-                      )}
-                    </p>
-                    <p>
-                      <strong>Block TimeStamp:</strong>
-                      <p>{getPostDate(post.time)}</p>
-                    </p>
-                    <p>
-                      <strong>Block Number:</strong>
-                      <p>{post.blockNumber}</p>
-                    </p>
+                  </p>
+                  <p>
+                    <button
+                      className="btn btn-primary my-1 mb-2"
+                      onClick={() => {
+                        getShares(index);
+                      }}
+                    >
+                      Get Shares
+                    </button>
+                    <br />
+                    {selectedIndex == index ? (
+                      shares.map((addr, index) => {
+                        return (
+                          <p
+                            className="text-primary"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title="Get creator Info"
+                            onClick={() => {
+                              setShow(true);
+                              getCreator(addr);
+                            }}
+                            key={index}
+                            style={{
+                              textDecoration: "none",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {index + 1}. {addr}
+                          </p>
+                        );
+                      })
+                    ) : (
+                      <></>
+                    )}
+                  </p>
+                  <p>
+                    <strong>Block TimeStamp:</strong>
+                    <p>{getPostDate(post.time)}</p>
+                  </p>
+                  <p>
+                    <strong>Block Number:</strong>
+                    <p>{post.blockNumber}</p>
+                  </p>
 
-                    <p>
-                      <strong> Post Content: </strong> <br />
-                      {post.postHash}
-                    </p>
-                  </div>
-                </>
-              );
-            })}
+                  <p>
+                    <strong> Post Content: </strong> <br />
+                    {post.postHash}
+                  </p>
+                </div>
+              </>
+            );
+          })}
         </div>
         {/* This modal will be displayed based on condition */}
         <Modal show={showModal} onHide={handleClose}>

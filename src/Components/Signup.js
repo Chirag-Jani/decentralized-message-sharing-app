@@ -34,7 +34,7 @@ function Signup(props) {
                 value={memberInfo.post}
               >
                 <option defaultValue={true}>Select Role</option>
-                {/* <option value="DEAN">DEAN</option> */}
+                <option value="DEAN">DEAN</option>
                 <option value="HOD">HOD</option>
                 <option value="STAFF">STAFF</option>
                 <option value="STUDENT">STUDENT</option>
