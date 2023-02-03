@@ -4,7 +4,7 @@
 // 0x617F2E2fD72FD9D5503197092aC168c91465E7f2
 // 0x17F6AD8Ef982297579C203069C1DbfFE4348c372
 
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: LGPL v3.0
 pragma solidity ^0.8.7;
 
 contract MainContract {
