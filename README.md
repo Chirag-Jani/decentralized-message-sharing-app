@@ -2,7 +2,7 @@
 
 ## How it is implemented? and How it Works?
 
-Please read the paper: []() to understand.
+Please read the paper: [Click here](https://www.sciencedirect.com/science/article/pii/S2665963823000313) to understand.
 
 ## Instructions to run
 
@@ -45,11 +45,11 @@ $ node compile
 - Deploy using,
 
 ```
-$ node deoloyAuth.js
+$ node deployAuth.js
 
-$ node deoloyAuth.js
+$ node deployMain.js
 
-$ node deoloyAuth.js
+$ node deployPost.js
 ```
 
 - You will see addresses of the deployed contracts on the terminal
